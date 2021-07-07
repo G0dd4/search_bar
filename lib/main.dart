@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'album.dart';
 
 void main() {
   runApp(MyApp());
@@ -48,14 +47,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool isSearching = false;
-
   List filteredAlbum = [];
 
   final List <String> groupName =[
     "The Real McKenzies",
     "Slipknot",
     "Beartooth",
-    "DropkickMurphys",
+    "Dropkick Murphys",
   ];
 
   final List <String> pathTheRealMcKenzies = [
@@ -182,7 +180,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                     ),
-
                     IconButton(
 
                       icon: Icon(Icons.cancel),
@@ -225,16 +222,26 @@ class _MyHomePageState extends State<MyHomePage> {
   void _filterData(String value) {
     setState(() {
       filteredAlbum = [];
-      print(value);
-      for(int index = 0; index < _row; index++){
-        if(dataAlbum[index][2].toLowerCase().contains(value.toLowerCase()) == true || dataAlbum[index][1].toLowerCase().contains(value.toLowerCase()) == true ){
+      for(int index = 0; index < _row; index++) {
+        if (dataAlbum[index][2].toLowerCase().contains(value.toLowerCase()) == true || dataAlbum[index][1].toLowerCase().contains(value.toLowerCase()) == true) {
           filteredAlbum.add(dataAlbum[index]);
         }
-        /*else if(dataAlbum[index][1].toLowerCase().contains(value.toLowerCase()) == true){
-          filteredAlbum.add(dataAlbum[index]);
-        }*/
       }
-    });
+      if(filteredAlbum.length == 0) {
+        List<dynamic> combinedDataGroup_Album =[];
+        List<dynamic> combinedDataAlbum_Group =[];
 
+        for (int index = 0; index < _row; index++) {
+          combinedDataGroup_Album.add(dataAlbum[index][1] + " "+ dataAlbum[index][2]);
+          combinedDataAlbum_Group.add(dataAlbum[index][2] + " "+ dataAlbum[index][1]);
+
+          if (combinedDataGroup_Album[index].toLowerCase().contains(value.toLowerCase()) == true || combinedDataAlbum_Group[index].toLowerCase().contains(value.toLowerCase()) == true  ) {
+            filteredAlbum.add(dataAlbum[index]);
+          }
+        }
+
+      }
+
+    });
   }
 }
