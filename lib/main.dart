@@ -56,21 +56,21 @@ class _MyHomePageState extends State<MyHomePage> {
   List filteredAlbum = [];
   List preFilteredAlbum = [];
 
-  final List<String> groupName = [
+  final List <String> groupName =[
     "The Real McKenzies",
     "Slipknot",
     "Beartooth",
     "DropkickMurphys",
   ];
 
-  final List<String> pathTheRealMcKenzies = [
+  final List <String> pathTheRealMcKenzies = [
     "assets/the_real_mckenzies/the_real_mckenzies.jpg",
     "assets/the_real_mckenzies/off_the_leash.jpg",
     "assets/the_real_mckenzies/westwinds.jpg",
     "assets/the_real_mckenzies/two_devils_will_talk.jpg",
     "assets/the_real_mckenzies/beer_and_loathing.jpg",
   ];
-  final List<String> albumTheRealMcKenzies = [
+  final List <String> albumTheRealMcKenzies = [
     "The Real McKenzies",
     "Off The Leash",
     "Westwinds",
@@ -78,42 +78,42 @@ class _MyHomePageState extends State<MyHomePage> {
     "Beer And Loathing",
   ];
 
-  final List<String> pathSlipknot = [
+  final List <String> pathSlipknot = [
     "assets/slipknot/slipknot.jpg",
     "assets/slipknot/lowa.jpg",
     "assets/slipknot/the_gray_chapter.jpg",
     "assets/slipknot/we_are_not_your_king.jpg"
   ];
-  final List<String> albumSlipknot = [
+  final List <String> albumSlipknot = [
     "Slipknot",
     "Lowa",
     "The Gray Chapter",
     "We Are Not Your Kind",
   ];
 
-  final List<String> pathBeartooth = [
+  final List <String> pathBeartooth = [
     "assets/beartooth/disgusting.jpg",
     "assets/beartooth/aggressive.jpg",
     "assets/beartooth/disease.jpg",
   ];
-  final List<String> albumBeartooth = [
+  final List <String> albumBeartooth = [
     "Disgusting",
     "Aggressive",
     "Disease",
   ];
 
-  final List<String> pathDropkickMurphys = [
+  final List <String> pathDropkickMurphys = [
     "assets/dropkick_murphys/the_warrior_s_code.jpg",
     "assets/dropkick_murphys/signed_and_sealed_in_blood.jpg",
   ];
-  final List<String> albumDropkickMurphys = [
+  final List <String> albumDropkickMurphys = [
     "The Warrior's Code",
     "Signed And Sealed In Blood",
   ];
 
   final List<String> genreAlbum = ["Rap", "Pop", "Metal", "Rock"];
   int _row = 14;
-  var dataAlbum = List.generate(14, (i) => List.generate(4, (j) => ""));
+  var dataAlbum = List.generate(14, (i) => List.generate(3,(j) => ""));
 
   @override
   Widget build(BuildContext context) {
@@ -728,18 +728,26 @@ class _MyHomePageState extends State<MyHomePage> {
   void _filterData(String value) {
     setState(() {
       filteredAlbum = [];
-      print(value);
-      for (int index = 0; index < preFilteredAlbum.length; index++) {
-        if (preFilteredAlbum[index][2].toLowerCase().contains(value.toLowerCase()) ==
-                true ||
-            preFilteredAlbum[index][1].toLowerCase().contains(value.toLowerCase()) ==
-                true) {
-          filteredAlbum.add(preFilteredAlbum[index]);
-        }
-        /*else if(dataAlbum[index][1].toLowerCase().contains(value.toLowerCase()) == true){
+      for(int index = 0; index < _row; index++) {
+        if (dataAlbum[index][2].toLowerCase().contains(value.toLowerCase()) == true || dataAlbum[index][1].toLowerCase().contains(value.toLowerCase()) == true) {
           filteredAlbum.add(dataAlbum[index]);
-        }*/
+        }
       }
+      if(filteredAlbum.length == 0) {
+        List<dynamic> combinedDataGroup_Album =[];
+        List<dynamic> combinedDataAlbum_Group =[];
+
+        for (int index = 0; index < _row; index++) {
+          combinedDataGroup_Album.add(dataAlbum[index][1] + " "+ dataAlbum[index][2]);
+          combinedDataAlbum_Group.add(dataAlbum[index][2] + " "+ dataAlbum[index][1]);
+
+          if (combinedDataGroup_Album[index].toLowerCase().contains(value.toLowerCase()) == true || combinedDataAlbum_Group[index].toLowerCase().contains(value.toLowerCase()) == true  ) {
+            filteredAlbum.add(dataAlbum[index]);
+          }
+        }
+
+      }
+
     });
   }
 }
