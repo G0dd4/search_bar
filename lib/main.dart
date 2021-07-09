@@ -53,8 +53,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool rockPressed = false;
   bool metalPressed = false;
 
-  List filteredAlbum = [];
-  List preFilteredAlbum = [];
+  List <Album> filteredAlbum = [];
+  List <Album> preFilteredAlbum = [];
 
   final List <String> groupName =[
     "The Real McKenzies",
@@ -113,60 +113,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<String> genreAlbum = ["Rap", "Pop", "Metal", "Rock"];
   int _row = 14;
-  var dataAlbum = List.generate(14, (i) => List.generate(3,(j) => ""));
+  List <Album> dataAlbum = [];
 
   @override
   Widget build(BuildContext context) {
     dataAlbum = [
-      [
-        pathTheRealMcKenzies[0],
-        groupName[0],
-        albumTheRealMcKenzies[0],
-        genreAlbum[0]
-      ],
-      [
-        pathTheRealMcKenzies[1],
-        groupName[0],
-        albumTheRealMcKenzies[1],
-        genreAlbum[1]
-      ],
-      [
-        pathTheRealMcKenzies[2],
-        groupName[0],
-        albumTheRealMcKenzies[2],
-        genreAlbum[2]
-      ],
-      [
-        pathTheRealMcKenzies[3],
-        groupName[0],
-        albumTheRealMcKenzies[3],
-        genreAlbum[3]
-      ],
-      [
-        pathTheRealMcKenzies[4],
-        groupName[0],
-        albumTheRealMcKenzies[4],
-        genreAlbum[0]
-      ],
-      [pathSlipknot[0], groupName[1], albumSlipknot[0], genreAlbum[1]],
-      [pathSlipknot[1], groupName[1], albumSlipknot[1], genreAlbum[2]],
-      [pathSlipknot[2], groupName[1], albumSlipknot[2], genreAlbum[3]],
-      [pathSlipknot[3], groupName[1], albumSlipknot[3], genreAlbum[0]],
-      [pathBeartooth[0], groupName[2], albumBeartooth[0], genreAlbum[2]],
-      [pathBeartooth[1], groupName[2], albumBeartooth[1], genreAlbum[0]],
-      [pathBeartooth[2], groupName[2], albumBeartooth[2], genreAlbum[3]],
-      [
-        pathDropkickMurphys[0],
-        groupName[3],
-        albumDropkickMurphys[1],
-        genreAlbum[0]
-      ],
-      [
-        pathDropkickMurphys[1],
-        groupName[3],
-        albumDropkickMurphys[1],
-        genreAlbum[0]
-      ],
+      Album(pathTheRealMcKenzies[0], groupName[0],albumTheRealMcKenzies[0],genreAlbum[0]),
+      Album(pathTheRealMcKenzies[1], groupName[0],albumTheRealMcKenzies[1],genreAlbum[1]),
+      Album(pathTheRealMcKenzies[2], groupName[0],albumTheRealMcKenzies[2],genreAlbum[2]),
+      Album(pathTheRealMcKenzies[3], groupName[0],albumTheRealMcKenzies[3],genreAlbum[3]),
+      Album(pathTheRealMcKenzies[4], groupName[0],albumTheRealMcKenzies[4],genreAlbum[0]),
+      Album(pathSlipknot[0], groupName[1],albumSlipknot[0],genreAlbum[1]),
+      Album(pathSlipknot[1], groupName[1],albumSlipknot[1],genreAlbum[2]),
+      Album(pathSlipknot[2], groupName[1],albumSlipknot[2],genreAlbum[3]),
+      Album(pathSlipknot[3], groupName[1],albumSlipknot[3],genreAlbum[0]),
+      Album(pathBeartooth[0], groupName[2],albumBeartooth[0],genreAlbum[1]),
+      Album(pathBeartooth[1], groupName[2],albumBeartooth[1],genreAlbum[2]),
+      Album(pathBeartooth[2], groupName[2],albumBeartooth[2],genreAlbum[3]),
+      Album(pathDropkickMurphys[0], groupName[3], albumDropkickMurphys[0],genreAlbum[0]),
+      Album(pathDropkickMurphys[1], groupName[3], albumDropkickMurphys[1],genreAlbum[1]),
     ];
 
     //filteredAlbum = dataAlbum;
@@ -205,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           onPressed: () {
                             setState(() {
                               this.isSearching = true;
-                              filteredAlbum = dataAlbum;
+                              filteredAlbum =preFilteredAlbum;
                             });
                           },
                         ),
@@ -234,13 +199,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         onPressed: () {
                           setState(() {
                             this.isSearching = false;
-                            filteredAlbum = dataAlbum;
+                            filteredAlbum =preFilteredAlbum;
                           });
                         },
                       ),
                     ]),
             ),
             Expanded(
+              flex: 2,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
@@ -250,428 +216,169 @@ class _MyHomePageState extends State<MyHomePage> {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      TextButton(
-                        child: Text('Rap'),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.red)),
-                            ),
-                            foregroundColor: rapPressed
-                                ? MaterialStateProperty.all(Colors.white)
-                                : MaterialStateProperty.all(Colors.red),
-                            backgroundColor: rapPressed
-                                ? MaterialStateProperty.all(Colors.red)
-                                : MaterialStateProperty.all(Colors.white),
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 50)),
-                            textStyle: MaterialStateProperty.all(
-                                TextStyle(fontSize: 30))),
-                        onPressed: () {
-                          setState(() {
-                            rapPressed = !rapPressed;
-                          });
-                          if (rapPressed) {
-                            popPressed = false;
-                            metalPressed = false;
-                            rockPressed = false;
-                            isSearching = false;
-                            _preFilterData('Rap');
-                          } else {
-                            filteredAlbum = dataAlbum;
-                          }
-                        },
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 20.0,
+                          right: 20.0,
+                        ),
+                        child: TextButton(
+                          child: Text('Rap'),
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    side: BorderSide(color: Colors.red)),
+                              ),
+                              foregroundColor: rapPressed
+                                  ? MaterialStateProperty.all(Colors.white)
+                                  : MaterialStateProperty.all(Colors.red),
+                              backgroundColor: rapPressed
+                                  ? MaterialStateProperty.all(Colors.red)
+                                  : MaterialStateProperty.all(Colors.white),
+                              padding: MaterialStateProperty.all(
+                                  EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 50)),
+                              textStyle: MaterialStateProperty.all(
+                                  TextStyle(fontSize: 30))),
+                          onPressed: () {
+                            setState(() {
+                              rapPressed = !rapPressed;
+                            });
+                            if (rapPressed) {
+                              popPressed = false;
+                              metalPressed = false;
+                              rockPressed = false;
+                              isSearching = false;
+                              _preFilterData('Rap');
+                            } else {
+                              filteredAlbum = dataAlbum;
+                            }
+                          },
+                        ),
                       ),
-                      TextButton(
-                        child: Text('Pop'),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.amber)),
-                            ),
-                            foregroundColor: popPressed
-                                ? MaterialStateProperty.all(Colors.white)
-                                : MaterialStateProperty.all(Colors.amber),
-                            backgroundColor: popPressed
-                                ? MaterialStateProperty.all(Colors.amber)
-                                : MaterialStateProperty.all(Colors.white),
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 50)),
-                            textStyle: MaterialStateProperty.all(
-                                TextStyle(fontSize: 30))),
-                        onPressed: () {
-                          setState(() {
-                            popPressed = !popPressed;
-                          });
-                          if (popPressed) {
-                            rapPressed = false;
-                            metalPressed = false;
-                            rockPressed = false;
-                            isSearching = false;
-                            _preFilterData('Pop');
-                          } else {
-                            filteredAlbum = dataAlbum;
-                          }
-                        },
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 20.0,
+                          right: 20.0,
+                        ),
+                        child: TextButton(
+                          child: Text('Pop'),
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    side: BorderSide(color: Colors.amber)),
+                              ),
+                              foregroundColor: popPressed
+                                  ? MaterialStateProperty.all(Colors.white)
+                                  : MaterialStateProperty.all(Colors.amber),
+                              backgroundColor: popPressed
+                                  ? MaterialStateProperty.all(Colors.amber)
+                                  : MaterialStateProperty.all(Colors.white),
+                              padding: MaterialStateProperty.all(
+                                  EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 50)),
+                              textStyle: MaterialStateProperty.all(
+                                  TextStyle(fontSize: 30))),
+                          onPressed: () {
+                            setState(() {
+                              popPressed = !popPressed;
+                            });
+                            if (popPressed) {
+                              rapPressed = false;
+                              metalPressed = false;
+                              rockPressed = false;
+                              isSearching = false;
+                              _preFilterData('Pop');
+                            } else {
+                              filteredAlbum = dataAlbum;
+                            }
+                          },
+                        ),
                       ),
-                      TextButton(
-                        child: Text('Rock'),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.teal)),
-                            ),
-                            foregroundColor: rockPressed
-                                ? MaterialStateProperty.all(Colors.white)
-                                : MaterialStateProperty.all(Colors.teal),
-                            backgroundColor: rockPressed
-                                ? MaterialStateProperty.all(Colors.teal)
-                                : MaterialStateProperty.all(Colors.white),
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 50)),
-                            textStyle: MaterialStateProperty.all(
-                                TextStyle(fontSize: 30))),
-                        onPressed: () {
-                          setState(() {
-                            rockPressed = !rockPressed;
-                          });
-                          if (rockPressed) {
-                            popPressed = false;
-                            metalPressed = false;
-                            rapPressed = false;
-                            isSearching = false;
-                            _preFilterData('Rock');
-                          } else {
-                            filteredAlbum = dataAlbum;
-                          }
-                        },
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 20.0,
+                          right: 20.0,
+                        ),
+                        child: TextButton(
+                          child: Text('Rock'),
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    side: BorderSide(color: Colors.teal)),
+                              ),
+                              foregroundColor: rockPressed
+                                  ? MaterialStateProperty.all(Colors.white)
+                                  : MaterialStateProperty.all(Colors.teal),
+                              backgroundColor: rockPressed
+                                  ? MaterialStateProperty.all(Colors.teal)
+                                  : MaterialStateProperty.all(Colors.white),
+                              padding: MaterialStateProperty.all(
+                                  EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 50)),
+                              textStyle: MaterialStateProperty.all(
+                                  TextStyle(fontSize: 30))),
+                          onPressed: () {
+                            setState(() {
+                              rockPressed = !rockPressed;
+                            });
+                            if (rockPressed) {
+                              popPressed = false;
+                              metalPressed = false;
+                              rapPressed = false;
+                              isSearching = false;
+                              _preFilterData('Rock');
+                            } else {
+                              filteredAlbum = dataAlbum;
+                            }
+                          },
+                        ),
                       ),
-                      TextButton(
-                        child: Text('Metal'),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.blue)),
-                            ),
-                            foregroundColor: metalPressed
-                                ? MaterialStateProperty.all(Colors.white)
-                                : MaterialStateProperty.all(Colors.blue),
-                            backgroundColor: metalPressed
-                                ? MaterialStateProperty.all(Colors.blue)
-                                : MaterialStateProperty.all(Colors.white),
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 50)),
-                            textStyle: MaterialStateProperty.all(
-                                TextStyle(fontSize: 30))),
-                        onPressed: () {
-                          setState(() {
-                            metalPressed = !metalPressed;
-                          });
-                          if (metalPressed) {
-                            popPressed = false;
-                            rapPressed = false;
-                            rockPressed = false;
-                            isSearching = false;
-                            _preFilterData('Metal');
-                          } else {
-                            filteredAlbum = dataAlbum;
-                          }
-                        },
-                      ),
-                      TextButton(
-                        child: Text('Rap'),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.red)),
-                            ),
-                            foregroundColor: rapPressed
-                                ? MaterialStateProperty.all(Colors.white)
-                                : MaterialStateProperty.all(Colors.red),
-                            backgroundColor: rapPressed
-                                ? MaterialStateProperty.all(Colors.red)
-                                : MaterialStateProperty.all(Colors.white),
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 50)),
-                            textStyle: MaterialStateProperty.all(
-                                TextStyle(fontSize: 30))),
-                        onPressed: () {
-                          setState(() {
-                            rapPressed = !rapPressed;
-                          });
-                          if (rapPressed) {
-                            popPressed = false;
-                            metalPressed = false;
-                            rockPressed = false;
-                            isSearching = false;
-                            _preFilterData('Rap');
-                          } else {
-                            filteredAlbum = dataAlbum;
-                          }
-                        },
-                      ),
-                      TextButton(
-                        child: Text('Pop'),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.amber)),
-                            ),
-                            foregroundColor: popPressed
-                                ? MaterialStateProperty.all(Colors.white)
-                                : MaterialStateProperty.all(Colors.amber),
-                            backgroundColor: popPressed
-                                ? MaterialStateProperty.all(Colors.amber)
-                                : MaterialStateProperty.all(Colors.white),
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 50)),
-                            textStyle: MaterialStateProperty.all(
-                                TextStyle(fontSize: 30))),
-                        onPressed: () {
-                          setState(() {
-                            popPressed = !popPressed;
-                          });
-                          if (popPressed) {
-                            rapPressed = false;
-                            metalPressed = false;
-                            rockPressed = false;
-                            isSearching = false;
-                            _preFilterData('Pop');
-                          } else {
-                            filteredAlbum = dataAlbum;
-                          }
-                        },
-                      ),
-                      TextButton(
-                        child: Text('Rock'),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.teal)),
-                            ),
-                            foregroundColor: rockPressed
-                                ? MaterialStateProperty.all(Colors.white)
-                                : MaterialStateProperty.all(Colors.teal),
-                            backgroundColor: rockPressed
-                                ? MaterialStateProperty.all(Colors.teal)
-                                : MaterialStateProperty.all(Colors.white),
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 50)),
-                            textStyle: MaterialStateProperty.all(
-                                TextStyle(fontSize: 30))),
-                        onPressed: () {
-                          setState(() {
-                            rockPressed = !rockPressed;
-                          });
-                          if (rockPressed) {
-                            popPressed = false;
-                            metalPressed = false;
-                            rapPressed = false;
-                            isSearching = false;
-                            _preFilterData('Rock');
-                          } else {
-                            filteredAlbum = dataAlbum;
-
-                          }
-                        },
-                      ),
-                      TextButton(
-                        child: Text('Metal'),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.blue)),
-                            ),
-                            foregroundColor: metalPressed
-                                ? MaterialStateProperty.all(Colors.white)
-                                : MaterialStateProperty.all(Colors.blue),
-                            backgroundColor: metalPressed
-                                ? MaterialStateProperty.all(Colors.blue)
-                                : MaterialStateProperty.all(Colors.white),
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 50)),
-                            textStyle: MaterialStateProperty.all(
-                                TextStyle(fontSize: 30))),
-                        onPressed: () {
-                          setState(() {
-                            metalPressed = !metalPressed;
-                          });
-                          if (metalPressed) {
-                            popPressed = false;
-                            rapPressed = false;
-                            rockPressed = false;
-                            isSearching = false;
-                            _preFilterData('Metal');
-                          } else {
-                            filteredAlbum = dataAlbum;
-
-                          }
-                        },
-                      ),
-                      TextButton(
-                        child: Text('Rap'),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.red)),
-                            ),
-                            foregroundColor: rapPressed
-                                ? MaterialStateProperty.all(Colors.white)
-                                : MaterialStateProperty.all(Colors.red),
-                            backgroundColor: rapPressed
-                                ? MaterialStateProperty.all(Colors.red)
-                                : MaterialStateProperty.all(Colors.white),
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 50)),
-                            textStyle: MaterialStateProperty.all(
-                                TextStyle(fontSize: 30))),
-                        onPressed: () {
-                          setState(() {
-                            rapPressed = !rapPressed;
-                          });
-                          if (rapPressed) {
-                            popPressed = false;
-                            metalPressed = false;
-                            rockPressed = false;
-                            isSearching = false;
-                            _preFilterData('Rap');
-                          } else {
-                            filteredAlbum = dataAlbum;
-                          }
-                        },
-                      ),
-                      TextButton(
-                        child: Text('Pop'),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.amber)),
-                            ),
-                            foregroundColor: popPressed
-                                ? MaterialStateProperty.all(Colors.white)
-                                : MaterialStateProperty.all(Colors.amber),
-                            backgroundColor: popPressed
-                                ? MaterialStateProperty.all(Colors.amber)
-                                : MaterialStateProperty.all(Colors.white),
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 50)),
-                            textStyle: MaterialStateProperty.all(
-                                TextStyle(fontSize: 30))),
-                        onPressed: () {
-                          setState(() {
-                            popPressed = !popPressed;
-                          });
-                          if (popPressed) {
-                            rapPressed = false;
-                            metalPressed = false;
-                            rockPressed = false;
-                            isSearching = false;
-                            _preFilterData('Pop');
-                          } else {
-                            filteredAlbum = dataAlbum;
-                          }
-                        },
-                      ),
-                      TextButton(
-                        child: Text('Rock'),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.teal)),
-                            ),
-                            foregroundColor: rockPressed
-                                ? MaterialStateProperty.all(Colors.white)
-                                : MaterialStateProperty.all(Colors.teal),
-                            backgroundColor: rockPressed
-                                ? MaterialStateProperty.all(Colors.teal)
-                                : MaterialStateProperty.all(Colors.white),
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 50)),
-                            textStyle: MaterialStateProperty.all(
-                                TextStyle(fontSize: 30))),
-                        onPressed: () {
-                          setState(() {
-                            rockPressed = !rockPressed;
-                          });
-                          if (rockPressed) {
-                            popPressed = false;
-                            metalPressed = false;
-                            rapPressed = false;
-                            isSearching = false;
-                            _preFilterData('Rock');
-                          } else {
-                            filteredAlbum = dataAlbum;
-                          }
-                        },
-                      ),
-                      TextButton(
-                        child: Text('Metal'),
-                        style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.blue)),
-                            ),
-                            foregroundColor: metalPressed
-                                ? MaterialStateProperty.all(Colors.white)
-                                : MaterialStateProperty.all(Colors.blue),
-                            backgroundColor: metalPressed
-                                ? MaterialStateProperty.all(Colors.blue)
-                                : MaterialStateProperty.all(Colors.white),
-                            padding: MaterialStateProperty.all(
-                                EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 50)),
-                            textStyle: MaterialStateProperty.all(
-                                TextStyle(fontSize: 30))),
-                        onPressed: () {
-                          setState(() {
-                            metalPressed = !metalPressed;
-                          });
-                          if (metalPressed) {
-                            popPressed = false;
-                            rapPressed = false;
-                            rockPressed = false;
-                            isSearching = false;
-                            _preFilterData('Metal');
-                          } else {
-                            filteredAlbum = dataAlbum;
-
-                          }
-                        },
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 20.0,
+                          right: 20.0,
+                        ),
+                        child: TextButton(
+                          child: Text('Metal'),
+                          style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(18.0),
+                                    side: BorderSide(color: Colors.blue)),
+                              ),
+                              foregroundColor: metalPressed
+                                  ? MaterialStateProperty.all(Colors.white)
+                                  : MaterialStateProperty.all(Colors.blue),
+                              backgroundColor: metalPressed
+                                  ? MaterialStateProperty.all(Colors.blue)
+                                  : MaterialStateProperty.all(Colors.white),
+                              padding: MaterialStateProperty.all(
+                                  EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 50)),
+                              textStyle: MaterialStateProperty.all(
+                                  TextStyle(fontSize: 30))),
+                          onPressed: () {
+                            setState(() {
+                              metalPressed = !metalPressed;
+                            });
+                            if (metalPressed) {
+                              popPressed = false;
+                              rapPressed = false;
+                              rockPressed = false;
+                              isSearching = false;
+                              _preFilterData('Metal');
+                            } else {
+                              filteredAlbum = dataAlbum;
+                            }
+                          },
+                        ),
                       ),
                     ],
                   );
@@ -681,6 +388,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             Expanded(
+              flex: 8,
               child: ListView.separated(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
@@ -692,13 +400,13 @@ class _MyHomePageState extends State<MyHomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Image.asset(
-                          filteredAlbum[index][0],
+                          filteredAlbum[index].path,
                           height: 100,
                           width: 100,
                         ),
-                        Text(filteredAlbum[index][1]),
-                        Text(filteredAlbum[index][2]),
-                        Text(filteredAlbum[index][3]),
+                        Text(filteredAlbum[index].group),
+                        Text(filteredAlbum[index].album),
+                        Text(filteredAlbum[index].genre),
                       ],
                     ),
                   );
@@ -717,7 +425,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       preFilteredAlbum = [];
       for (int index = 0; index < _row; index++) {
-        if (dataAlbum[index][3].toLowerCase().contains(value.toLowerCase()) == true) {
+        if (dataAlbum[index].genre.toLowerCase().contains(value.toLowerCase()) == true) {
           preFilteredAlbum.add(dataAlbum[index]);
         }
       }
@@ -728,21 +436,21 @@ class _MyHomePageState extends State<MyHomePage> {
   void _filterData(String value) {
     setState(() {
       filteredAlbum = [];
-      for(int index = 0; index < _row; index++) {
-        if (dataAlbum[index][2].toLowerCase().contains(value.toLowerCase()) == true || dataAlbum[index][1].toLowerCase().contains(value.toLowerCase()) == true) {
-          filteredAlbum.add(dataAlbum[index]);
+      for(int index = 0; index < preFilteredAlbum.length; index++) {
+        if (preFilteredAlbum[index].group.toLowerCase().contains(value.toLowerCase()) == true || preFilteredAlbum[index].album.toLowerCase().contains(value.toLowerCase()) == true) {
+          filteredAlbum.add(preFilteredAlbum[index]);
         }
       }
       if(filteredAlbum.length == 0) {
         List<dynamic> combinedDataGroup_Album =[];
         List<dynamic> combinedDataAlbum_Group =[];
 
-        for (int index = 0; index < _row; index++) {
-          combinedDataGroup_Album.add(dataAlbum[index][1] + " "+ dataAlbum[index][2]);
-          combinedDataAlbum_Group.add(dataAlbum[index][2] + " "+ dataAlbum[index][1]);
+        for (int index = 0; index < preFilteredAlbum.length; index++) {
+          combinedDataGroup_Album.add(preFilteredAlbum[index].group + " "+ preFilteredAlbum[index].album);
+          combinedDataAlbum_Group.add(preFilteredAlbum[index].album + " "+ preFilteredAlbum[index].group);
 
           if (combinedDataGroup_Album[index].toLowerCase().contains(value.toLowerCase()) == true || combinedDataAlbum_Group[index].toLowerCase().contains(value.toLowerCase()) == true  ) {
-            filteredAlbum.add(dataAlbum[index]);
+            filteredAlbum.add(preFilteredAlbum[index]);
           }
         }
 
