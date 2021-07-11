@@ -114,9 +114,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<String> genreAlbum = ["Rap", "Pop", "Metal", "Rock"];
   int _row = 14;
   List <Album> dataAlbum = [];
-
   @override
-  Widget build(BuildContext context) {
+  void initState(){
     dataAlbum = [
       Album(pathTheRealMcKenzies[0], groupName[0],albumTheRealMcKenzies[0],genreAlbum[0]),
       Album(pathTheRealMcKenzies[1], groupName[0],albumTheRealMcKenzies[1],genreAlbum[1]),
@@ -133,6 +132,13 @@ class _MyHomePageState extends State<MyHomePage> {
       Album(pathDropkickMurphys[0], groupName[3], albumDropkickMurphys[0],genreAlbum[0]),
       Album(pathDropkickMurphys[1], groupName[3], albumDropkickMurphys[1],genreAlbum[1]),
     ];
+    filteredAlbum = dataAlbum;
+    preFilteredAlbum = dataAlbum;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     //filteredAlbum = dataAlbum;
     return Scaffold(
