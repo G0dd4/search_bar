@@ -53,8 +53,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool rockPressed = false;
   bool metalPressed = false;
 
-  List <Album> filteredAlbum = [];
-  List <Album> preFilteredAlbum = [];
+  List filteredAlbum = [];
+  List preFilteredAlbum = [];
 
   final List <String> groupName =[
     "The Real McKenzies",
@@ -113,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final List<String> genreAlbum = ["Rap", "Pop", "Metal", "Rock"];
   int _row = 14;
-  List <Album> dataAlbum = [];
+  var dataAlbum = List.generate(14, (i) => List.generate(3,(j) => ""));
 
   @override
   Widget build(BuildContext context) {
@@ -133,6 +133,13 @@ class _MyHomePageState extends State<MyHomePage> {
       Album(pathDropkickMurphys[0], groupName[3], albumDropkickMurphys[0],genreAlbum[0]),
       Album(pathDropkickMurphys[1], groupName[3], albumDropkickMurphys[1],genreAlbum[1]),
     ];
+    filteredAlbum = dataAlbum;
+    preFilteredAlbum = dataAlbum;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
 
     //filteredAlbum = dataAlbum;
     return Scaffold(
