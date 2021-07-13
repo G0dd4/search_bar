@@ -41,29 +41,29 @@ class SearchBar {
   void _filterData(String value) {
     print(value);
     filteredBooks = [];
-    for (int index = 0; index < initialBooks.length; index++) {
-      if (initialBooks[index]
+    for (int index = 0; index < preFilteredBooks.length; index++) {
+      if (preFilteredBooks[index]
                   .author
                   .toLowerCase()
                   .contains(value.toLowerCase()) ==
               true ||
-          initialBooks[index]
+          preFilteredBooks[index]
                   .title
                   .toLowerCase()
                   .contains(value.toLowerCase()) ==
               true) {
-        filteredBooks.add(initialBooks[index]);
+        filteredBooks.add(preFilteredBooks[index]);
       }
     }
     if (filteredBooks.length == 0) {
       List<dynamic> combinedDataAuthorTitle = [];
       List<dynamic> combinedDataTitleAuthor = [];
 
-      for (int index = 0; index < initialBooks.length; index++) {
+      for (int index = 0; index < preFilteredBooks.length; index++) {
         combinedDataAuthorTitle
-            .add(initialBooks[index].author + " " + initialBooks[index].title);
+            .add(preFilteredBooks[index].author + " " + preFilteredBooks[index].title);
         combinedDataTitleAuthor
-            .add(initialBooks[index].title + " " + initialBooks[index].author);
+            .add(preFilteredBooks[index].title + " " + preFilteredBooks[index].author);
 
         if (combinedDataAuthorTitle[index]
                     .toLowerCase()
@@ -73,10 +73,10 @@ class SearchBar {
                     .toLowerCase()
                     .contains(value.toLowerCase()) ==
                 true) {
-          filteredBooks.add(initialBooks[index]);
+          filteredBooks.add(preFilteredBooks[index]);
         }
       }
     }
-    streamController.add(true);
+    streamController.add(0);
   }
 }

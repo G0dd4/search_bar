@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'buttons.dart';
+import '../screens/mainPage.dart';
 
-class CarouselButtons{
-
-  Widget carouselWidget(List<Buttons> dataToDisplay){
+class CarouselButtons {
+  Widget carouselWidget(List<Buttons> dataToDisplay) {
     return Expanded(
-        flex: 1,
-        child: ListView.separated(
+      flex: 1,
+      child: ListView.separated(
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         padding: const EdgeInsets.all(4),
@@ -14,8 +14,8 @@ class CarouselButtons{
         itemBuilder: (BuildContext context, int index) {
           return dataToDisplay[index].buttons();
         },
-        separatorBuilder: (BuildContext context,int index) => const Divider(),
-    ),
+        separatorBuilder: (BuildContext context, int index) => const Divider(),
+      ),
     );
   }
 }

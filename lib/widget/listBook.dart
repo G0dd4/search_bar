@@ -6,6 +6,7 @@ class ListBook {
 
   Widget getWidget(List<Book> dataToDisplay) {
     return Expanded(
+      flex: 15,
       child: Card(
         elevation: 8,
         child: ListView.separated(

@@ -8,7 +8,7 @@ import '../widget/searchBar.dart';
 import '../widget/buttons.dart';
 import '../widget/carouselButtons.dart';
 
-StreamController<bool> streamController = StreamController<bool>();
+StreamController<int> streamController = StreamController<int>();
 
 
 final List <Book> initialBooks =[
@@ -16,22 +16,27 @@ final List <Book> initialBooks =[
   Book('Emilio Bouzamondo', 'Temps de paix...', 'assets/nouvelle.jpg','romance'),
   Book('Aldous Huxley', 'Brave new world', 'assets/brave_new_world.jpg','mystère'),
   Book('J.R.R Tolkien', 'Lord of the Rings', 'assets/Lord_of_the_rings.jpg','fantasy'),
-  Book('Isaac Asimov', 'Fondation', 'assets/Fondation.jpg','aventure')
+  Book('Isaac Asimov', 'Fondation', 'assets/Fondation.jpg','aventure'),
+  Book('Frank Herbert', 'Dune', 'assets/dune.jpg','aventure'),
+  Book('Emilio Bouzamondo', 'Temps de paix...', 'assets/nouvelle.jpg','fantasy'),
+  Book('Aldous Huxley', 'Brave new world', 'assets/brave_new_world.jpg','science-fiction'),
+  Book('J.R.R Tolkien', 'Lord of the Rings', 'assets/Lord_of_the_rings.jpg','romance'),
+  Book('Isaac Asimov', 'Fondation', 'assets/Fondation.jpg','romance')
 ];
 
 final List <Buttons> buttons = [
-  Buttons('science-fiction',Colors.red,false),
-  Buttons('romance',Colors.amber,false),
-  Buttons('mystère',Colors.teal,false),
-  Buttons('fantasy',Colors.green,false),
-  Buttons('aventure',Colors.black,false),
+  Buttons('science-fiction',Colors.red,false,1),
+  Buttons('romance',Colors.amber,false,2),
+  Buttons('mystère',Colors.teal,false,3),
+  Buttons('fantasy',Colors.green,false,4),
+  Buttons('aventure',Colors.black,false,5),
 ];
 
 List <Book> filteredBooks = [];
 List <Book> preFilteredBooks = [];
 
 class MainPage extends StatefulWidget {
-  final Stream<bool> stream;
+  final Stream<int> stream;
 
   MainPage(this.stream);
 
@@ -45,8 +50,17 @@ class _MainPage extends State<MainPage> {
   ListBook listBook = ListBook();
   CarouselButtons carouselButtons = CarouselButtons();
 
-  void updateState(bool param){
+  void updateState(int param){
       setState(() {
+        if(param != 0) {
+          print(param);
+          for(int i = 0; i< buttons.length; i++) {
+            if(param-1 != i){
+              buttons[i].buttonPressed = false;
+            }
+          }
+          isSearching = false;
+        }
 
       });
   }
