@@ -5,19 +5,30 @@ import 'package:flutter/material.dart';
 import 'package:search_bar/widget/books.dart';
 import 'package:search_bar/widget/listBook.dart';
 import '../widget/searchBar.dart';
+import '../widget/buttons.dart';
+import '../widget/carouselButtons.dart';
 
 StreamController<bool> streamController = StreamController<bool>();
 
 
 final List <Book> initialBooks =[
-  Book('Frank Herbert', 'Dune', 'assets/dune.jpg'),
-  Book('Emilio Bouzamondo', 'Temps de paix...', 'assets/nouvelle.jpg'),
-  Book('Aldous Huxley', 'Brave new world', 'assets/brave_new_world.jpg'),
-  Book('J.R.R Tolkien', 'Lord of the Rings', 'assets/Lord_of_the_rings.jpg'),
-  Book('Isaac Asimov', 'Fondation', 'assets/Fondation.jpg')
+  Book('Frank Herbert', 'Dune', 'assets/dune.jpg','science-fiction'),
+  Book('Emilio Bouzamondo', 'Temps de paix...', 'assets/nouvelle.jpg','romance'),
+  Book('Aldous Huxley', 'Brave new world', 'assets/brave_new_world.jpg','mystère'),
+  Book('J.R.R Tolkien', 'Lord of the Rings', 'assets/Lord_of_the_rings.jpg','fantasy'),
+  Book('Isaac Asimov', 'Fondation', 'assets/Fondation.jpg','aventure')
+];
+
+final List <Buttons> buttons = [
+  Buttons('science-fiction',Colors.red,false),
+  Buttons('romance',Colors.amber,false),
+  Buttons('mystère',Colors.teal,false),
+  Buttons('fantasy',Colors.green,false),
+  Buttons('aventure',Colors.black,false),
 ];
 
 List <Book> filteredBooks = [];
+List <Book> preFilteredBooks = [];
 
 class MainPage extends StatefulWidget {
   final Stream<bool> stream;
@@ -32,6 +43,7 @@ class MainPage extends StatefulWidget {
 class _MainPage extends State<MainPage> {
   bool isSearching = false;
   ListBook listBook = ListBook();
+  CarouselButtons carouselButtons = CarouselButtons();
 
   void updateState(bool param){
       setState(() {
@@ -94,6 +106,7 @@ class _MainPage extends State<MainPage> {
                       ]
                 )
             ),
+            carouselButtons.carouselWidget(buttons),
             listBook.getWidget(filteredBooks),
           ],
         ),

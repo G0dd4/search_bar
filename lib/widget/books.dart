@@ -8,8 +8,9 @@ class Book {
   final String title;
   final String author;
   final String imageUrl;
+  final String genre;
 
-  const Book(this.author, this.title, this.imageUrl);
+  const Book(this.author, this.title, this.imageUrl,this.genre);
 
   Widget transformIntoWidget() {
     return Row(
