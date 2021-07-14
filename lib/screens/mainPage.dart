@@ -20,7 +20,7 @@ final List <Book> initialBooks =[
   Book('Frank Herbert', 'Dune', 'assets/dune.jpg','aventure'),
   Book('Emilio Bouzamondo', 'Temps de paix...', 'assets/nouvelle.jpg','fantasy'),
   Book('Aldous Huxley', 'Brave new world', 'assets/brave_new_world.jpg','science-fiction'),
-  Book('J.R.R Tolkien', 'Lord of the Rings', 'assets/Lord_of_the_rings.jpg','romance'),
+  Book('J.R.R Tolkien', 'Bilbo', 'assets/Lord_of_the_rings.jpg','romance'),
   Book('Isaac Asimov', 'Fondation', 'assets/Fondation.jpg','romance')
 ];
 
@@ -68,6 +68,7 @@ class _MainPage extends State<MainPage> {
   void initState(){
     filteredBooks = initialBooks;
     super.initState();
+    preFilteredBooks = initialBooks;
     // sets first value
     widget.stream.listen((param) {
       updateState(param);
@@ -114,6 +115,7 @@ class _MainPage extends State<MainPage> {
                           onPressed: () {
                             setState(() {
                               isSearching = false;
+                              filteredBooks = initialBooks;
                             });
                           },
                         ),
