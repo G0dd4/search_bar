@@ -10,7 +10,6 @@ import '../widget/carouselButtons.dart';
 
 StreamController<int> streamController = StreamController<int>();
 
-
 final List <Book> initialBooks =[
   Book('Frank Herbert', 'Dune', 'assets/dune.jpg','science-fiction'),
   Book('Emilio Bouzamondo', 'Temps de paix...', 'assets/nouvelle.jpg','romance'),
@@ -31,6 +30,8 @@ final List <Buttons> buttons = [
   Buttons('fantasy',Colors.green,false,4),
   Buttons('aventure',Colors.black,false,5),
 ];
+
+bool isSearching = false;
 
 List <Book> filteredBooks = [];
 List <Book> preFilteredBooks = [];
@@ -76,7 +77,6 @@ class _MainPage extends State<MainPage> {
   }
 
   Widget build(BuildContext context) {
-    SearchBar searchBar = SearchBar();
     ListBook listBook = ListBook();
 
     return Scaffold(
@@ -94,33 +94,7 @@ class _MainPage extends State<MainPage> {
                   bottom: 10.0,
                   right: 30.0,
                 ),
-                child: !isSearching
-                    ? Row(
-                        children: [
-                          searchBar.hideSearchBar(),
-                          IconButton(
-                            icon: Icon(Icons.search),
-                            onPressed: () {
-                              setState(() {
-                                isSearching = true;
-                              });
-                            },
-                          ),
-                        ],
-                      )
-                    : Row(children: [
-                        searchBar.showSearchBar(),
-                        IconButton(
-                          icon: Icon(Icons.cancel),
-                          onPressed: () {
-                            setState(() {
-                              isSearching = false;
-                              filteredBooks = initialBooks;
-                            });
-                          },
-                        ),
-                      ]
-                )
+                child: SearchBar(),
             ),
             carouselButtons.carouselWidget(buttons),
             listBook.getWidget(filteredBooks),
