@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'buttons.dart';
-import '../screens/mainPage.dart';
 
 class CarouselButtons {
   Widget carouselWidget(List<Buttons> dataToDisplay) {
     return Expanded(
-      flex: 1,
+      flex: 2,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
