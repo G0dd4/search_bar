@@ -37,6 +37,7 @@ final List<Buttons> buttons = [
 ];
 
 bool isSearching = false;
+bool turnOffSearchBar = false;
 
 List<Book> filteredBooks = [];
 List<Book> preFilteredBooks = [];
@@ -65,6 +66,7 @@ class _MainPage extends State<MainPage> {
           }
         }
         isSearching = false;
+
       }
     });
   }

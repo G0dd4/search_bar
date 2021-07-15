@@ -39,6 +39,7 @@ class Buttons {
             this.buttonPressed = !this.buttonPressed;
           if (this.buttonPressed) {
             _preFilterData(this.text);
+            turnOffSearchBar = true;
           }
           else {
             filteredBooks = initialBooks;

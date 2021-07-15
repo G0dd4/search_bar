@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Book {
   static const double itemHeight = 170.0;
   static const double itemWidth = 120.0;
-  static const double offset = 10.0;
+  static const double offset = 1.0;
 
   final String title;
   final String author;
