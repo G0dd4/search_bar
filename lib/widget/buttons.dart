@@ -32,9 +32,9 @@ class Buttons {
                 : MaterialStateProperty.all(Colors.white),
             padding: MaterialStateProperty.all(
                 EdgeInsets.symmetric(
-                    vertical: 10, horizontal: 50)),
+                    vertical: 10, horizontal: 35)),
             textStyle: MaterialStateProperty.all(
-                TextStyle(fontSize: 30))),
+                TextStyle(fontSize: 20))),
         onPressed: () {
             this.buttonPressed = !this.buttonPressed;
           if (this.buttonPressed) {

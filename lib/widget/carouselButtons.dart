@@ -3,17 +3,16 @@ import 'buttons.dart';
 
 class CarouselButtons {
   Widget carouselWidget(List<Buttons> dataToDisplay) {
-    return Expanded(
-      flex: 2,
-      child: ListView.separated(
+    double itemHeight = 30.0;
+    return Container(
+      height: itemHeight,
+      child: ListView.builder(
+        padding: EdgeInsets.only(left: 30.0),
         scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        padding: const EdgeInsets.all(4),
         itemCount: dataToDisplay.length,
         itemBuilder: (BuildContext context, int index) {
           return dataToDisplay[index].buttons();
         },
-        separatorBuilder: (BuildContext context, int index) => const Divider(),
       ),
     );
   }
