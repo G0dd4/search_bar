@@ -3,7 +3,7 @@ import 'buttons.dart';
 
 class CarouselButtons {
   Widget carouselWidget(List<Buttons> dataToDisplay) {
-    double itemHeight = 30.0;
+    double itemHeight = 48.0;
     return Container(
       height: itemHeight,
       child: ListView.builder(

@@ -66,7 +66,6 @@ class _MainPage extends State<MainPage> {
           }
         }
         isSearching = false;
-
       }
     });
   }
@@ -79,7 +78,6 @@ class _MainPage extends State<MainPage> {
     widget.stream.listen((param) {
       updateState(param);
     });
-
   }
 
   Widget build(BuildContext context) {
@@ -93,15 +91,7 @@ class _MainPage extends State<MainPage> {
          *************************************/
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 30.0,
-                top: 30.0,
-                bottom: 10.0,
-                right: 30.0,
-              ),
-              child: SearchBar(),
-            ),
+            SearchBar(),
             carouselButtons.carouselWidget(buttons),
             listBook.getWidget(filteredBooks),
           ],

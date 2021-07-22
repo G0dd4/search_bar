@@ -10,6 +10,7 @@ class Buttons {
   Buttons(this.text,this.color,this.buttonPressed, this.index);
 
   Widget buttons(){
+
     return Padding(
       padding: const EdgeInsets.only(
         left: 20.0,
