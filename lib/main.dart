@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:search_bar/services/auth.dart';
 import 'screens/home.dart';
+import 'screens/wrapper.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,9 +19,13 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: new Home(),
+    return StreamProvider<User?>.value(
+      initialData: null,
+      value: AuthService().user,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Wrapper(),
+      ),
     );
   }
 }
