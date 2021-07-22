@@ -3,12 +3,14 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:search_bar/widget/books.dart';
+import 'package:search_bar/widget/bottomBar.dart';
 import 'package:search_bar/widget/listBook.dart';
 import '../widget/searchBar.dart';
 import '../widget/buttons.dart';
 import '../widget/carouselButtons.dart';
+import '../widget/bottomBar.dart';
 
-StreamController<int> streamController = StreamController<int>();
+StreamController<int> streamController = StreamController<int>.broadcast();
 
 final List<Book> initialBooks = [
   Book('Frank Herbert', 'Dune', 'assets/dune.jpg', 'science-fiction'),
@@ -44,6 +46,7 @@ List<Book> preFilteredBooks = [];
 
 class MainPage extends StatefulWidget {
   final Stream<int> stream;
+  late StreamSubscription streamSubscription;
 
   MainPage(this.stream);
 
@@ -74,10 +77,17 @@ class _MainPage extends State<MainPage> {
     filteredBooks = initialBooks;
     super.initState();
     preFilteredBooks = initialBooks;
+
     // sets first value
-    widget.stream.listen((param) {
+    widget.streamSubscription = widget.stream.listen((param) {
       updateState(param);
     });
+  }
+
+  @override
+  void dispose() {
+    widget.streamSubscription.cancel();
+    super.dispose();
   }
 
   Widget build(BuildContext context) {
@@ -96,6 +106,9 @@ class _MainPage extends State<MainPage> {
             listBook.getWidget(filteredBooks),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomBar(
+        current: 1,
       ),
     );
   }

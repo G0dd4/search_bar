@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:search_bar/screens/mainPage.dart';
+import 'screens/home.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
     ]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: new MainPage(streamController.stream),
+      home: new Home(),
     );
   }
 }
