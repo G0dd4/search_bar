@@ -57,4 +57,13 @@ class AuthService{
       return null;
     }
   }
+
+ getEmail() async{
+    try{
+      return _auth.currentUser!.email;
+    }catch(e){
+      print(e.toString());
+      return null;
+    }
+  }
 }

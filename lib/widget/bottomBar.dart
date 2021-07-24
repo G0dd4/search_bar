@@ -1,6 +1,5 @@
 import 'package:search_bar/screens/profile.dart';
-
-import '../screens/home.dart';
+import 'package:search_bar/screens/wrapper.dart';
 import '../screens/mainPage.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +58,7 @@ class _BottomBar extends State<BottomBar> {
                   case 0:
                     if (widget.current != 0)
                       Navigator.pushAndRemoveUntil(context,
-                          customPageRouteBuilder(Home()), (_) => false);
+                          customPageRouteBuilder(Wrapper()), (_) => false);
                     break;
                   case 1:
                     if (widget.current != 1)
