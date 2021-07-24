@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../screens/authenticate/authenticate.dart';
 import '../screens/home.dart';
 import 'package:provider/provider.dart';
+import '../screens/profile.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class Wrapper extends StatelessWidget {
     if (user == null){
       return Authenticate();
     }else{
-      return Home();
+      return Profile();
     }
   }
 }
