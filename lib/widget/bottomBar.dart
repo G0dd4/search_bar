@@ -1,4 +1,4 @@
-import 'package:search_bar/screens/profile.dart';
+import 'package:search_bar/screens/profileHome.dart';
 import 'package:search_bar/screens/wrapper.dart';
 import '../screens/mainPage.dart';
 import 'package:flutter/material.dart';

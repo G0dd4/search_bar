@@ -18,6 +18,9 @@ class _RegisterState extends State<Register> {
 
   String email ='';
   String password ='';
+  String lastName='';
+  String firstName='';
+  String pseudo='';
   String error ='';
 
   @override
@@ -52,60 +55,92 @@ class _RegisterState extends State<Register> {
         child: Form(
           key: _formKey,
           child: Center(
-            child: Column(
-              children: <Widget>[
-                SizedBox(height:20.0),
-                TextFormField(
-                    decoration: const InputDecoration(
-                      //hintText: 'Adresse mail',
-                      labelText: 'Adresse mail',
-                    ),
-                    validator: (val) => val!.isEmpty ? 'Entrez une adresse mail' : null,
-                    onChanged: (val){
-                      setState(() => email = val);
-                    }
-                ),
-                SizedBox(height:20.0),
-                TextFormField(
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      //hintText: 'Mot de passe',
-                      labelText: 'Mot de passe',
-                    ),
-                    validator: (val) => val!.isEmpty ? 'Entrez un mot de passe' : null,
-                    onChanged: (val){
-                      setState(() => password = val);
-                    }
-                ),
-                SizedBox(height:20.0),
-                TextButton(
-                    child: Text('Inscription',
-                  style: TextStyle(color: Colors.white),
-                ),
-                    style: ButtonStyle(
-                        shape: MaterialStateProperty.all<
-                            RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                              side: BorderSide(color: Colors.green)),
-                        ),
-                      backgroundColor: MaterialStateProperty.all(Colors.green),
-                    ),
-                    onPressed: () async{
-                      if(_formKey.currentState!.validate()){
-                        dynamic result = await _auth.registerWithEmailAndPassword(email, password);
-                        if(result == null){
-                          setState(() => error = 'Entrez une adresse mail valide');
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height:20.0),
+                  TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Nom',
+                      ),
+                      validator: (val) => val!.isEmpty ? 'Entrez votre nom' : null,
+                      onChanged: (val){
+                        setState(() => lastName = val);
+                      }
+                  ),
+                  SizedBox(height:20.0),
+                  TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Prénom',
+                      ),
+                      validator: (val) => val!.isEmpty ? 'Entrez votre prénom' : null,
+                      onChanged: (val){
+                        setState(() => firstName = val);
+                      }
+                  ),
+                  SizedBox(height:20.0),
+                  TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Pseudo',
+                      ),
+                      validator: (val) => val!.isEmpty ? 'Entrez un pseudo' : null,
+                      onChanged: (val){
+                        setState(() => pseudo = val);
+                      }
+                  ),
+                  SizedBox(height:20.0),
+                  TextFormField(
+                      decoration: const InputDecoration(
+                        //hintText: 'Adresse mail',
+                        labelText: 'Adresse mail',
+                      ),
+                      validator: (val) => val!.isEmpty ? 'Entrez une adresse mail' : null,
+                      onChanged: (val){
+                        setState(() => email = val);
+                      }
+                  ),
+                  SizedBox(height:20.0),
+                  TextFormField(
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        //hintText: 'Mot de passe',
+                        labelText: 'Mot de passe',
+                      ),
+                      validator: (val) => val!.isEmpty ? 'Entrez un mot de passe' : null,
+                      onChanged: (val){
+                        setState(() => password = val);
+                      }
+                  ),
+                  SizedBox(height:20.0),
+                  TextButton(
+                      child: Text('Inscription',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                      style: ButtonStyle(
+                          shape: MaterialStateProperty.all<
+                              RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(color: Colors.green)),
+                          ),
+                        backgroundColor: MaterialStateProperty.all(Colors.green),
+                      ),
+                      onPressed: () async{
+                        if(_formKey.currentState!.validate()){
+                          dynamic result = await _auth.registerWithEmailAndPassword(email, password,lastName,firstName,pseudo);
+                          if(result == null){
+                            setState(() => error = 'Entrez une adresse mail et un mot de passe valides');
+                          }
                         }
                       }
-                    }
-                ),
-                SizedBox(height: 12.0),
-                Text(
-                  error,
-                  style: TextStyle(color: Colors.red, fontSize: 14.0),
-                ),
-              ],
+                  ),
+                  SizedBox(height: 12.0),
+                  Text(
+                    error,
+                    style: TextStyle(color: Colors.red, fontSize: 14.0),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
