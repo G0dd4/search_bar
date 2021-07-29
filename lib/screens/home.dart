@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'mainPage.dart';
 import '../widget/bookCarouselTitle.dart';
 import '../widget/bottomBar.dart';
+import 'package:search_bar/api/importBook.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -34,7 +34,7 @@ class _Home extends State<Home> {
             ),
             BookCarouselTitle(
               title: "nouveaux Livres",
-              books: initialBooks,
+              books: newParutionBooks,
             )
           ],
         )),

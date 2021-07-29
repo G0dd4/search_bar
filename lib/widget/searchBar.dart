@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:search_bar/screens/mainPage.dart';
+import 'package:search_bar/api/importBook.dart';
 import 'dart:math';
 
 class SearchBar extends StatefulWidget {
@@ -227,12 +228,12 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
     filteredBooks = [];
     for (int index = 0; index < preFilteredBooks.length; index++) {
       if (preFilteredBooks[index]
-                  .author
+                  .shortenAuthor
                   .toLowerCase()
                   .contains(value.toLowerCase()) ==
               true ||
           preFilteredBooks[index]
-                  .title
+                  .shortenTitle
                   .toLowerCase()
                   .contains(value.toLowerCase()) ==
               true) {
@@ -244,12 +245,12 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
       List<dynamic> combinedDataTitleAuthor = [];
 
       for (int index = 0; index < preFilteredBooks.length; index++) {
-        combinedDataAuthorTitle.add(preFilteredBooks[index].author +
+        combinedDataAuthorTitle.add(preFilteredBooks[index].shortenAuthor +
             " " +
-            preFilteredBooks[index].title);
-        combinedDataTitleAuthor.add(preFilteredBooks[index].title +
+            preFilteredBooks[index].shortenTitle);
+        combinedDataTitleAuthor.add(preFilteredBooks[index].shortenTitle +
             " " +
-            preFilteredBooks[index].author);
+            preFilteredBooks[index].shortenAuthor);
 
         if (combinedDataAuthorTitle[index]
                     .toLowerCase()

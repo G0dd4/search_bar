@@ -2,33 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:search_bar/widget/books.dart';
 import 'package:search_bar/widget/bottomBar.dart';
 import 'package:search_bar/widget/listBook.dart';
 import '../widget/searchBar.dart';
 import '../widget/buttons.dart';
 import '../widget/carouselButtons.dart';
 import '../widget/bottomBar.dart';
+import 'package:search_bar/api/importBook.dart';
 
 StreamController<int> streamController = StreamController<int>.broadcast();
-
-final List<Book> initialBooks = [
-  Book('Frank Herbert', 'Dune', 'assets/dune.jpg', 'science-fiction'),
-  Book('Emilio Bouzamondo', 'Temps de paix...', 'assets/nouvelle.jpg',
-      'romance'),
-  Book('Aldous Huxley', 'Brave new world', 'assets/brave_new_world.jpg',
-      'mystère'),
-  Book('J.R.R Tolkien', 'Lord of the Rings', 'assets/Lord_of_the_rings.jpg',
-      'fantasy'),
-  Book('Isaac Asimov', 'Fondation', 'assets/Fondation.jpg', 'aventure'),
-  Book('Frank Herbert', 'Dune', 'assets/dune.jpg', 'aventure'),
-  Book('Emilio Bouzamondo', 'Temps de paix...', 'assets/nouvelle.jpg',
-      'fantasy'),
-  Book('Aldous Huxley', 'Brave new world', 'assets/brave_new_world.jpg',
-      'science-fiction'),
-  Book('J.R.R Tolkien', 'Bilbo', 'assets/Lord_of_the_rings.jpg', 'romance'),
-  Book('Isaac Asimov', 'Fondation', 'assets/Fondation.jpg', 'romance')
-];
 
 final List<Buttons> buttons = [
   Buttons('science-fiction', Colors.red, false, 1),
@@ -37,16 +19,12 @@ final List<Buttons> buttons = [
   Buttons('fantasy', Colors.green, false, 4),
   Buttons('aventure', Colors.black, false, 5),
 ];
-
 bool isSearching = false;
 bool turnOffSearchBar = false;
 
-List<Book> filteredBooks = [];
-List<Book> preFilteredBooks = [];
-
+@immutable
 class MainPage extends StatefulWidget {
   final Stream<int> stream;
-  late StreamSubscription streamSubscription;
 
   MainPage(this.stream);
 
@@ -55,6 +33,9 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPage extends State<MainPage> {
+  //BddBooks bddBooks = BddBooks(collection: "album");
+
+  late StreamSubscription streamSubscription;
   bool isSearching = false;
   ListBook listBook = ListBook();
   CarouselButtons carouselButtons = CarouselButtons();
@@ -73,20 +54,19 @@ class _MainPage extends State<MainPage> {
     });
   }
 
+  @override
   void initState() {
-    filteredBooks = initialBooks;
     super.initState();
+    filteredBooks = initialBooks;
     preFilteredBooks = initialBooks;
-
-    // sets first value
-    widget.streamSubscription = widget.stream.listen((param) {
+    streamSubscription = widget.stream.listen((param) {
       updateState(param);
     });
   }
 
   @override
   void dispose() {
-    widget.streamSubscription.cancel();
+    streamSubscription.cancel();
     super.dispose();
   }
 

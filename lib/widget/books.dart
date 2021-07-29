@@ -1,16 +1,62 @@
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:epubx/epubx.dart' as epub;
+import 'package:search_bar/api/epub_api.dart';
 
 class Book {
   static const double itemHeight = 170.0;
   static const double itemWidth = 120.0;
   static const double offset = 1.0;
 
-  final String title;
-  final String author;
-  final String imageUrl;
-  final String genre;
+  late Stream bookStream;
 
-  const Book(this.author, this.title, this.imageUrl, this.genre);
+  late DateTime time;
+  late String shortenTitle;
+  late String title;
+  late String author;
+  late String shortenAuthor;
+
+  late String epubDirectory;
+  late String imageDirectory;
+
+  late Image image;
+  late String epubUrl;
+  late String genre;
+  late epub.EpubBook epubFile;
+
+  Future<void> buildWithEpub() async {
+    this.epubFile = await EpubApi.getEpubBookStreaming(this.epubUrl);
+    _importEpub(epubFile);
+  }
+
+  Book.map(Map data, String imageUrl, String epubUrl) {
+    this.title = data['Title'];
+    if (title.length > 13) {
+      shortenTitle = title.replaceRange(13, null, '');
+      shortenTitle = shortenTitle + "...";
+    } else
+      shortenTitle = title;
+
+    this.author = data['Author'];
+    if (author.length > 15) {
+      shortenAuthor = author.replaceRange(15, null, '');
+      shortenAuthor = shortenAuthor + "...";
+    } else
+      shortenAuthor = author;
+
+    this.epubDirectory = data['epubFile'];
+    this.imageDirectory = data['imageFile'];
+    this.genre = "";
+    Timestamp stamp = data['Parution'];
+    this.time = stamp.toDate();
+
+    this.image = Image.network(imageUrl);
+  }
+
+  void _importEpub(epub.EpubBook myEpub) {
+    this.epubFile = myEpub;
+  }
 
   Widget transformIntoWidget() {
     return Row(
@@ -30,7 +76,7 @@ class Book {
                 width: itemWidth,
                 decoration: new BoxDecoration(
                   image: new DecorationImage(
-                    image: new AssetImage(this.imageUrl),
+                    image: this.image.image,
                     fit: BoxFit.fill,
                   ),
                   boxShadow: [
@@ -48,7 +94,7 @@ class Book {
         Padding(
           padding: const EdgeInsets.only(
               top: 5.0, bottom: 5.0, right: offset, left: offset),
-          child: Text(this.author,
+          child: Text(this.shortenAuthor,
               style: TextStyle(
                 fontSize: 12.0,
                 decorationColor: Color(0xFF9B9B9B),
@@ -59,7 +105,7 @@ class Book {
         Padding(
           padding: const EdgeInsets.only(
               top: 5.0, bottom: 5.0, right: offset, left: offset),
-          child: Text(this.title,
+          child: Text(this.shortenTitle,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 15.0,
@@ -95,7 +141,7 @@ class Book {
                   width: itemWidth,
                   decoration: new BoxDecoration(
                     image: new DecorationImage(
-                      image: new AssetImage(this.imageUrl),
+                      image: this.image.image,
                       fit: BoxFit.fill,
                     ),
                     boxShadow: [
@@ -116,7 +162,7 @@ class Book {
         Padding(
           padding: const EdgeInsets.only(
               top: 5.0, bottom: 5.0, right: offset, left: offset),
-          child: Text(this.author,
+          child: Text(this.shortenAuthor,
               style: TextStyle(
                 fontSize: 12.0,
                 decorationColor: Color(0xFF9B9B9B),
@@ -127,7 +173,7 @@ class Book {
         Padding(
           padding: const EdgeInsets.only(
               top: 5.0, bottom: 5.0, right: offset, left: offset),
-          child: Text(this.title,
+          child: Text(this.shortenTitle,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 15.0,
