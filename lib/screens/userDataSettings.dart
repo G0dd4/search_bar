@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:search_bar/models/userData.dart';
 import 'package:search_bar/screens/profileHome.dart';
 import 'package:search_bar/services/bddUsers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserDataSettings extends StatefulWidget {
   const UserDataSettings({Key? key}) : super(key: key);
@@ -22,6 +23,7 @@ class _UserDataSettingsState extends State<UserDataSettings> {
   String firstName='';
   String pseudo='';
 
+
   @override
   Widget build(BuildContext context) {
     final userData = Provider.of<UserData>(context);
@@ -31,6 +33,7 @@ class _UserDataSettingsState extends State<UserDataSettings> {
     String currentLastName=userData.lastName;
     String currentFirstName=userData.firstName;
     String currentPseudo=userData.pseudo;
+
 
     return Scaffold(
       backgroundColor: Color(0xFFFCFCFC),
@@ -147,6 +150,8 @@ class _UserDataSettingsState extends State<UserDataSettings> {
                         backgroundColor: _isEnabled ? MaterialStateProperty.all(Colors.green) : MaterialStateProperty.all(Color(0xFF9B9B9B)),
                       ),
                       onPressed: () async{
+                        print(email);
+                        print(firstName);
                         if(_isEnabled) {
                           if (_formKey.currentState!.validate()) {
                             /*showDialog(
@@ -154,7 +159,11 @@ class _UserDataSettingsState extends State<UserDataSettings> {
                               builder: (BuildContext context) => _popUp(context),
                             );*/
                               await BddUser(uid: uid).updateUserData(
-                                  lastName, firstName, email, password, pseudo);
+                                  (lastName == '') ? currentLastName : lastName,
+                                  (firstName == '') ? currentFirstName : firstName,
+                                  (email == '') ? currentEmail : email,
+                                  (password == '') ? currentPassword : password,
+                                  (pseudo == '') ? currentPseudo : pseudo);
                               Navigator.pushAndRemoveUntil(context,
                                   customPageRouteBuilder(Profile()), (
                                       _) => false);

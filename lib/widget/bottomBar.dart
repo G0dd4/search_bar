@@ -1,3 +1,4 @@
+import 'package:search_bar/screens/myLibrary.dart';
 import 'package:search_bar/screens/profileHome.dart';
 import 'package:search_bar/screens/wrapper.dart';
 import '../screens/mainPage.dart';
@@ -47,6 +48,11 @@ class _BottomBar extends State<BottomBar> {
                 label: 'Explorer',
               ),
               BottomNavigationBarItem(
+                icon: Icon(Icons.book_outlined),
+                activeIcon: Icon(Icons.book_rounded),
+                label: 'My Library',
+              ),
+              BottomNavigationBarItem(
                 icon: Icon(Icons.person_outline),
                 activeIcon: Icon(Icons.person_rounded),
                 label: 'Profil',
@@ -70,6 +76,12 @@ class _BottomBar extends State<BottomBar> {
                     break;
                   case 2:
                     if (widget.current != 2)
+                      Navigator.pushAndRemoveUntil(
+                          context, customPageRouteBuilder(
+                          MyLibrary()), (_) => false);
+                    break;
+                  case 3:
+                    if (widget.current != 3)
                       Navigator.pushAndRemoveUntil(
                           context, customPageRouteBuilder(
                           Profile()), (_) => false);

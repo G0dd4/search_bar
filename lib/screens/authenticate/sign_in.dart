@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:search_bar/services/auth.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import '../loadingScreen.dart';
+
 
 
 class SignIn extends StatefulWidget {
@@ -14,18 +15,24 @@ class SignIn extends StatefulWidget {
   _SignInState createState() => _SignInState();
 }
 
-class _SignInState extends State<SignIn> {
+class _SignInState extends State<SignIn>{
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
+  bool _checkbox = true;
 
   String email ='';
   String password ='';
   String error ='';
+  late String lastEmail;
+  late String lastPassword;
+
 
   @override
   Widget build(BuildContext context) {
+    lastEmail = getEmail().toString();
+    lastPassword = getPassword().toString();
     return loading ? LoadingScreen() : Scaffold(
       backgroundColor: /*Colors.brown[100]*/Color(0xFFFCFCFC),
       appBar: AppBar(
@@ -65,7 +72,8 @@ class _SignInState extends State<SignIn> {
                         //hintText: 'Adresse mail',
                         labelText: 'Adresse mail',
                       ),
-                    validator: (val) => val!.isEmpty ? 'Entrez une adresse mail' : null,
+                      initialValue: lastEmail,
+                      validator: (val) => val!.isEmpty ? 'Entrez une adresse mail' : null,
                     onChanged: (val){
                       setState(() => email = val);
                     }
@@ -77,6 +85,7 @@ class _SignInState extends State<SignIn> {
                         labelText: 'Mot de passe',
                       ),
                     obscureText: true,
+                      initialValue: lastPassword,
                       validator: (val) => val!.isEmpty ? 'Entrez un mot de passe' : null,
                       onChanged: (val){
                         setState(() => password = val);
@@ -105,8 +114,18 @@ class _SignInState extends State<SignIn> {
                           setState(() {
                             error = 'Adresse mail ou mot de passe incorrect';
                           loading = false;
+
                           } );
-                      }
+                      }else{
+                          if(_checkbox) {
+                            final prefs = await SharedPreferences.getInstance();
+                            setState(() {
+                              prefs.setString('email', email);
+                              prefs.setString('password', password);
+                            });
+                            print(prefs.getString('email'));
+                          }
+                        }
                       }
                     }
                   ),
@@ -115,6 +134,17 @@ class _SignInState extends State<SignIn> {
                   error,
                   style: TextStyle(color: Colors.red, fontSize: 14.0),
                 ),
+                  SizedBox(height: 12.0),
+                  CheckboxListTile(
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: Text('Enregistrer les identifiants de connexion'),
+                    value: _checkbox,
+                    onChanged: (value) {
+                      setState(() {
+                        _checkbox = !_checkbox;
+                      });
+                    },
+                  ),
                 ],
               ),
             ),
@@ -123,4 +153,16 @@ class _SignInState extends State<SignIn> {
       ),
     );
   }
-}
+
+  Future<String> getEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('email') ?? '';
+    }
+
+  Future<String> getPassword() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('password') ?? '';
+  }
+
+  }
+

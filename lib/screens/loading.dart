@@ -9,10 +9,7 @@ class Loading extends StatelessWidget {
     return Container(
       color: Color(0xFFFCFCFC),
       child: Center(
-        child: SpinKitChasingDots(
-          color: Colors.blue,
-          size: 50.0,
-        )
+        child: Image(image: AssetImage('assets/Logo_nooks.png'))
     )
     );
   }

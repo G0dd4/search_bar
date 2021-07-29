@@ -26,7 +26,7 @@ class _BookCarousel extends State<BookCarousel> {
               scrollDirection: Axis.horizontal,
               itemCount: widget.books.length,
               itemBuilder: (BuildContext context, int index) {
-                return widget.books[index].transformIntoTilesWidget();
+                return widget.books[index].transformIntoTilesWidget(context);
               }),
         )
       ],

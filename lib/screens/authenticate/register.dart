@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:search_bar/services/auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Register extends StatefulWidget {
 
@@ -15,6 +16,7 @@ class _RegisterState extends State<Register> {
 
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
+  bool _checkbox = true;
 
   String email ='';
   String password ='';
@@ -130,6 +132,14 @@ class _RegisterState extends State<Register> {
                           dynamic result = await _auth.registerWithEmailAndPassword(email, password,lastName,firstName,pseudo);
                           if(result == null){
                             setState(() => error = 'Entrez une adresse mail et un mot de passe valides');
+                          }else{
+                            if(_checkbox) {
+                              final prefs = await SharedPreferences.getInstance();
+                              setState(() {
+                                prefs.setString('email', email);
+                                prefs.setString('password', password);
+                              });
+                            }
                           }
                         }
                       }
@@ -138,6 +148,16 @@ class _RegisterState extends State<Register> {
                   Text(
                     error,
                     style: TextStyle(color: Colors.red, fontSize: 14.0),
+                  ),
+                  CheckboxListTile(
+                    controlAffinity: ListTileControlAffinity.leading,
+                    title: Text('Enregistrer les identifiants de connexion'),
+                    value: _checkbox,
+                    onChanged: (value) {
+                      setState(() {
+                        _checkbox = !_checkbox;
+                      });
+                    },
                   ),
                 ],
               ),

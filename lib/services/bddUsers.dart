@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:search_bar/models/userData.dart';
+import 'package:search_bar/widget/books.dart';
 
 class BddUser{
 
@@ -40,22 +41,6 @@ class BddUser{
     });
   }
 
- /* List<UserData> _listUserDataFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.docs.map((doc){
-      return UserData(
-          lastName: doc['lastName'] ?? '',
-          firstName: doc['firstName'] ?? '',
-          email: doc['email'] ?? '',
-          password: doc['password'] ?? '',
-          pseudo: doc['pseudo'] ?? '',
-      );
-    }).toList();
-  }
-
-  Stream<List<UserData>> get users {
-    return usersCollection.snapshots().map(_listUserDataFromSnapshot);
-  }*/
-
   UserData _userDataFromSnapshot(DocumentSnapshot snapshot){
     return UserData(lastName: snapshot.get('Nom'),
         firstName: snapshot.get('Prénom'),
@@ -67,6 +52,30 @@ class BddUser{
 
   Stream<UserData> get userData{
     return usersCollection.doc(uid).snapshots().map(_userDataFromSnapshot);
+  }
+
+  Future addBooks(String title,String author,String imageUrl,String genre) async {
+    return await usersCollection.doc(uid).collection('Ma bibliothèque').add({
+      'Titre': title,
+      'Auteur': author,
+      'Couverture': imageUrl,
+      'Genre': genre
+    });
+  }
+
+ List<Book> _listBooksFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc){
+      return Book(
+        doc.get('Auteur'),
+        doc.get('Titre'),
+        doc.get('Couverture'),
+        doc.get('Genre'),
+      );
+    }).toList();
+  }
+
+  Stream<List<Book>> get books {
+    return usersCollection.doc(uid).collection('Ma bibliothèque').snapshots().map(_listBooksFromSnapshot);
   }
 
 }

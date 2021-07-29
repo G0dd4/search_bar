@@ -84,7 +84,7 @@ class _ProfileMainState extends State<ProfileMain> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomBar(current: 2),
+      bottomNavigationBar: BottomBar(current: 3),
     );
   }
 
