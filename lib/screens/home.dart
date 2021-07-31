@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:search_bar/widget/books.dart';
 import 'package:flutter/material.dart';
 import '../widget/bookCarouselTitle.dart';
 import '../widget/bottomBar.dart';
@@ -9,6 +11,42 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
+  List<Book> newParution = [];
+
+  void _isConnected() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        print("connected");
+      }
+    } on SocketException catch (_) {
+      print("not connected");
+      showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+                title: Text("vous n'êtes pas connecté"),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text("Ok"))
+                ],
+              ));
+    }
+  }
+
+  void _getNewParution() async {
+    newParution = await initNewParution();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _isConnected();
+    _getNewParution();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,8 +72,8 @@ class _Home extends State<Home> {
             ),
             BookCarouselTitle(
               title: "nouveaux Livres",
-              books: newParutionBooks,
-            )
+              books: newParution,
+            ),
           ],
         )),
       ),

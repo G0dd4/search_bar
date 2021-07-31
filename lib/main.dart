@@ -7,7 +7,7 @@ import 'api/importBook.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await initBooks();
+  await initLink();
   runApp(MyApp());
 }
 

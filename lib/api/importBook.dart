@@ -8,13 +8,18 @@ List<Book> filteredBooks = [];
 List<Book> preFilteredBooks = [];
 List<Book> newParutionBooks = [];
 
-Future<void> initBooks() async {
-  List<FirebaseFile> myEpubFileList;
-  List<FirebaseFile> myImageFileList;
-  List<Object?> myDataBaseList;
+List<FirebaseFile> myEpubFileList = [];
+List<FirebaseFile> myImageFileList = [];
 
+Future<void> initLink() async {
   myEpubFileList = await FirebaseStorageApi.listAll("Epubs/");
   myImageFileList = await FirebaseStorageApi.listAll("Images/");
+  await initBooks();
+}
+
+Future<void> initBooks() async {
+  List<Object?> myDataBaseList;
+
   myDataBaseList = await FirebaseFirestoreApi.getCollection("Livres");
 
   for (int index = 0; index < myEpubFileList.length; index++) {
@@ -44,19 +49,16 @@ Future<void> initBooks() async {
   }
   preFilteredBooks = initialBooks;
   filteredBooks = initialBooks;
-  initNewParution();
 }
 
-void initNewParution() {
-  var tempData = initialBooks;
-  for (int i = 0; i < tempData.length; i++) {
-    for (int j = i; j < tempData.length; j++) {
-      if (tempData[i].time.isBefore(tempData[j].time)) {
-        var bookTmp = tempData[j];
-        tempData[j] = tempData[i];
-        tempData[i] = bookTmp;
-      }
-    }
+Future<List<Book>> initNewParution() async {
+  List<Object?> myDataBaseList;
+  List<Book> newBooks = [];
+  myDataBaseList =
+      await FirebaseFirestoreApi.getLastFromCollection("Livres", "Parution", 5);
+  for (int i = 0; i < myDataBaseList.length; i++) {
+    newBooks.add(Book.map(myDataBaseList[i] as Map, myImageFileList[i].url,
+        myEpubFileList[i].url));
   }
-  newParutionBooks = tempData.getRange(0, 7).toList();
+  return newBooks;
 }

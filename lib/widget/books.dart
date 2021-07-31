@@ -52,10 +52,26 @@ class Book {
     this.time = stamp.toDate();
 
     this.image = Image.network(imageUrl);
+
+    print(this.epubDirectory);
   }
 
   void _importEpub(epub.EpubBook myEpub) {
     this.epubFile = myEpub;
+  }
+
+  Map<String, dynamic> importIntoMap() {
+    Map dataToImport = Map<String, dynamic>();
+
+    dataToImport = ({
+      'Author': this.author,
+      'Title': this.title,
+      'Parution': Timestamp.fromDate(this.time),
+      'epubFile': this.epubDirectory,
+      'imageFile': this.imageDirectory,
+    });
+
+    return dataToImport as Map<String, dynamic>;
   }
 
   Widget transformIntoWidget() {

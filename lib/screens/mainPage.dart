@@ -9,8 +9,11 @@ import '../widget/buttons.dart';
 import '../widget/carouselButtons.dart';
 import '../widget/bottomBar.dart';
 import 'package:search_bar/api/importBook.dart';
+import 'package:search_bar/widget/books.dart';
 
 StreamController<int> streamController = StreamController<int>.broadcast();
+StreamController<List<Book>> searchBarData =
+    StreamController<List<Book>>.broadcast();
 
 final List<Buttons> buttons = [
   Buttons('science-fiction', Colors.red, false, 1),
@@ -25,7 +28,6 @@ bool turnOffSearchBar = false;
 @immutable
 class MainPage extends StatefulWidget {
   final Stream<int> stream;
-
   MainPage(this.stream);
 
   @override
@@ -34,13 +36,15 @@ class MainPage extends StatefulWidget {
 
 class _MainPage extends State<MainPage> {
   //BddBooks bddBooks = BddBooks(collection: "album");
+  final Stream<List<Book>> streamSearchBar = searchBarData.stream;
 
+  late StreamSubscription searchBarSubscription;
   late StreamSubscription streamSubscription;
   bool isSearching = false;
   ListBook listBook = ListBook();
   CarouselButtons carouselButtons = CarouselButtons();
 
-  void updateState(int param) {
+  void _updateStateButton(int param) {
     setState(() {
       if (param != 0) {
         print(param);
@@ -54,19 +58,30 @@ class _MainPage extends State<MainPage> {
     });
   }
 
+  void _updateStateSearchBar(List<Book> param) {
+    filteredBooks = param;
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
     filteredBooks = initialBooks;
     preFilteredBooks = initialBooks;
     streamSubscription = widget.stream.listen((param) {
-      updateState(param);
+      _updateStateButton(param);
+    });
+
+    searchBarSubscription = streamSearchBar.listen((param) {
+      _updateStateSearchBar(param);
     });
   }
 
   @override
   void dispose() {
     streamSubscription.cancel();
+    searchBarSubscription.cancel();
+
     super.dispose();
   }
 
@@ -81,7 +96,11 @@ class _MainPage extends State<MainPage> {
          *************************************/
         child: Column(
           children: [
-            SearchBar(),
+            SearchBar(
+              title: "Explorer",
+              initialBooks: initialBooks,
+              streamController: searchBarData,
+            ),
             carouselButtons.carouselWidget(buttons),
             listBook.getWidget(filteredBooks),
           ],
