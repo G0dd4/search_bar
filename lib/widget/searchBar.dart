@@ -1,9 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:search_bar/screens/mainPage.dart';
 import 'dart:math';
 
+import 'books.dart';
+
 class SearchBar extends StatefulWidget {
+
+  final String title;
+  List<Book> prefilteredBooks;
+  List<Book> filteredBooks;
+  StreamController<int> streamController;
+
+  SearchBar(this.title,this.prefilteredBooks,this.filteredBooks,this.streamController);
+
   @override
   _SearchBar createState() => _SearchBar();
 }
@@ -56,7 +67,7 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
               children: [
                 Container(
                   child: Text(
-                    isSearching == false ? "Explorer" : "",
+                    isSearching == false ? widget.title : "",
                     style: TextStyle(
                       letterSpacing: 1.0,
                       fontFamily: 'Roboto',
@@ -108,7 +119,7 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
                         child: IconButton(
                           onPressed: () {
                             textControler.clear();
-                            _filterData('');
+                            _filterData('',widget.prefilteredBooks);
                           },
                           icon: Icon(
                             Icons.close,
@@ -149,7 +160,7 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
                         focusNode: focusNode,
                         autofocus: false,
                         onChanged: (value) {
-                          _filterData(value);
+                          _filterData(value,widget.prefilteredBooks);
                         },
                         controller: textControler,
                         onEditingComplete: () {
@@ -196,7 +207,7 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
                             _controller.forward();
                           } else {
                             textControler.clear();
-                            _filterData(textControler.text);
+                            _filterData(textControler.text,widget.prefilteredBooks);
 
                             ///if the search bar is expanded
                             isSearching = false;
@@ -222,9 +233,9 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
     );
   }
 
-  void _filterData(String value) {
+  void _filterData(String value, List<Book> preFilteredBooks) {
     print(value);
-    filteredBooks = [];
+    widget.filteredBooks = [];
     for (int index = 0; index < preFilteredBooks.length; index++) {
       if (preFilteredBooks[index]
                   .author
@@ -236,10 +247,10 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
                   .toLowerCase()
                   .contains(value.toLowerCase()) ==
               true) {
-        filteredBooks.add(preFilteredBooks[index]);
+        widget.filteredBooks.add(preFilteredBooks[index]);
       }
     }
-    if (filteredBooks.length == 0) {
+    if (widget.filteredBooks.length == 0) {
       List<dynamic> combinedDataAuthorTitle = [];
       List<dynamic> combinedDataTitleAuthor = [];
 
@@ -259,11 +270,11 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
                     .toLowerCase()
                     .contains(value.toLowerCase()) ==
                 true) {
-          filteredBooks.add(preFilteredBooks[index]);
+          widget.filteredBooks.add(preFilteredBooks[index]);
         }
       }
     }
-    streamController.add(0);
+    widget.streamController.add(0);
   }
 
   @override

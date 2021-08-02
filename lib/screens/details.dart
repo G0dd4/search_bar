@@ -1,7 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:search_bar/services/auth.dart';
 import 'package:search_bar/services/bddUsers.dart';
 import 'package:search_bar/widget/books.dart';
 
@@ -17,61 +14,22 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-  @override
-  Widget build(BuildContext context) {
+  var list = [];
 
-    return StreamProvider<User?>.value(
-        initialData: null,
-        value: AuthService().user,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Details1(book: widget.book),
-      ),
-    );
+  @override
+  void initState(){
+    _set();
+    print("1");
+    print(list);
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      setState(() => {});
+    });
   }
-}
 
-class Details1 extends StatefulWidget {
-  Details1({
-    required  this.book
-  });
-
-  final Book book;
-
-  @override
-  _Details1State createState() => _Details1State();
-}
-
-class _Details1State extends State<Details1> {
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User?>(context);
-    return StreamProvider<List<Book>>.value(
-      initialData: [],
-      value: BddUser(uid: user!.uid).books,
-      child: MaterialApp(debugShowCheckedModeBanner: false,
-        home:DetailsScreenMain(book: widget.book),
-      ),
-    );
-  }
-}
-
-class DetailsScreenMain extends StatefulWidget {
-  DetailsScreenMain({
-    required  this.book
-  });
-
-  final Book book;
-
-  @override
-  _DetailsScreenMainState createState() => _DetailsScreenMainState();
-}
-
-class _DetailsScreenMainState extends State<DetailsScreenMain> {
-  @override
-  Widget build(BuildContext context) {
-    final user = Provider.of<User?>(context);
-    final books = Provider.of<List<Book>>(context);
+    setState(() => {});
     double boxheight = MediaQuery.of(context).size.height - 100;
     double boxwidth = MediaQuery.of(context).size.width - 50;
     // Si l'objet livre n'a pas de résumé, message d'excuse
@@ -119,16 +77,41 @@ class _DetailsScreenMainState extends State<DetailsScreenMain> {
                           alignment: MainAxisAlignment.spaceBetween,
                           children: [
                             IconButton(
-                              onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
+                              onPressed: () => Navigator.popUntil(context, (route) =>route.isFirst),
                               icon: Icon(
                                 Icons.arrow_back,
+                                color: Colors.white,
                               ),
                             ),
                             IconButton(
-                              onPressed: () => {},
-                              icon: Icon(
-                                Icons.add_comment,
+                              onPressed: (list.length != 0)
+                                  ? () async {await BddUser().deleteBooks(widget.book.id);
+                                  setState(() =>{});
+                              }
+                                  :() => {},
+                              icon: Icon(Icons.delete),
+                              disabledColor: Color(0xFF9B9B9B),
+                              color : list.length != 0
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                            IconButton(
+                              onPressed: (list.length != 0)
+                                  ? () => {}
+                                  : () async {
+                                await BddUser().addBooks(
+                                    widget.book.title, widget.book.author,
+                                    widget.book.imageUrl, widget.book.genre,
+                                    widget.book.id);
+                                setState(() => {});
+                              },
+                              icon: Icon((list.length != 0)
+                                  ?Icons.done
+                                  :Icons.library_add,
                               ),
+                              color : (list.length != 0)
+                                  ? Colors.blue
+                                  : Colors.white,
                             ),
                           ],
                         ),
@@ -222,51 +205,6 @@ class _DetailsScreenMainState extends State<DetailsScreenMain> {
                         ),
                       ),
                     ),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child:TextButton(
-                          onPressed: () async { await BddUser(uid: user!.uid).addBooks(widget.book.title, widget.book.author, widget.book.imageUrl, widget.book.genre);},
-                          child: new Text(
-                            "    Ajouter à sa bibliothèque    ",
-                            style: TextStyle(
-                              letterSpacing: 1.0,
-                              fontFamily: 'Roboto',
-                              fontSize: 15.0,
-                            ),
-                          ),
-                          style: ButtonStyle(
-                            foregroundColor: MaterialStateProperty.all(Colors.white),
-                            backgroundColor: MaterialStateProperty.all(Colors.green[400]),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(18.0),
-                            ),
-                            ),
-                          ),
-                        )
-                        /*: TextButton(
-                          onPressed: () {},
-                          child: new Text(
-                            "    Supprimer de sa bibliothèque    ",
-                            style: TextStyle(
-                              letterSpacing: 1.0,
-                              fontFamily: 'Roboto',
-                              fontSize: 15.0,
-                            ),
-                          ),
-                          style: ButtonStyle(
-                            foregroundColor: MaterialStateProperty.all(Colors.white),
-                            backgroundColor: MaterialStateProperty.all(Colors.green[400]),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(18.0),
-                            ),
-                            ),
-                          ),
-                        )*/
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -276,7 +214,21 @@ class _DetailsScreenMainState extends State<DetailsScreenMain> {
       ),
     );
   }
+
+  void _set() async{
+    try{
+      final result = await BddUser().compare(widget.book.title, widget.book.author);
+      list = result;
+      print('2');
+      print(list);
+    }catch(e){
+      print(e.toString());
+      return null;
+    }
+  }
 }
+
+
 
 
 

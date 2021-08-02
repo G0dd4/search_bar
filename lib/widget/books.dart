@@ -10,8 +10,10 @@ class Book {
   final String author;
   final String imageUrl;
   final String genre;
+  final String id;
+  bool add = false;
 
-  const Book(this.author, this.title, this.imageUrl, this.genre);
+  Book(this.author, this.title, this.imageUrl, this.genre,this.id);
 
   Widget transformIntoWidget() {
     return Row(

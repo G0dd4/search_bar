@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:search_bar/screens/mainPage.dart';
 
+import 'books.dart';
+
 class Buttons {
   final String text;
   bool buttonPressed;
   int index;
   Color color;
+  List<Book> initialBooks;
 
-  Buttons(this.text,this.color,this.buttonPressed, this.index);
+  Buttons(this.text,this.color,this.buttonPressed, this.index,this.initialBooks);
 
   Widget buttons(){
 
@@ -39,12 +42,12 @@ class Buttons {
         onPressed: () {
             this.buttonPressed = !this.buttonPressed;
           if (this.buttonPressed) {
-            _preFilterData(this.text);
+            _preFilterData(this.text,this.initialBooks);
             turnOffSearchBar = true;
           }
           else {
-            filteredBooks = initialBooks;
-            preFilteredBooks = initialBooks;
+            filteredBooks = this.initialBooks;
+            preFilteredBooks = this.initialBooks;
           }
             streamController.add(this.index);
 
@@ -53,7 +56,7 @@ class Buttons {
     );
   }
 
-  void _preFilterData(String value) {
+  void _preFilterData(String value,List<Book> initialBooks) {
       preFilteredBooks = [];
       for (int index = 0; index < initialBooks.length; index++) {
         if (initialBooks[index].genre.toLowerCase().contains(value.toLowerCase()) == true) {

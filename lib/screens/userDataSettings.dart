@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:search_bar/models/userData.dart';
 import 'package:search_bar/screens/profileHome.dart';
+import 'package:search_bar/services/auth.dart';
 import 'package:search_bar/services/bddUsers.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserDataSettings extends StatefulWidget {
   const UserDataSettings({Key? key}) : super(key: key);
@@ -28,6 +28,7 @@ class _UserDataSettingsState extends State<UserDataSettings> {
   Widget build(BuildContext context) {
     final userData = Provider.of<UserData>(context);
     final String uid = userData.uid;
+    final AuthService _auth = AuthService();
     String currentEmail =userData.email;
     String currentPassword =userData.password;
     String currentLastName=userData.lastName;
@@ -150,20 +151,28 @@ class _UserDataSettingsState extends State<UserDataSettings> {
                         backgroundColor: _isEnabled ? MaterialStateProperty.all(Colors.green) : MaterialStateProperty.all(Color(0xFF9B9B9B)),
                       ),
                       onPressed: () async{
-                        print(email);
-                        print(firstName);
                         if(_isEnabled) {
                           if (_formKey.currentState!.validate()) {
                             /*showDialog(
                               context: context,
                               builder: (BuildContext context) => _popUp(context),
                             );*/
-                              await BddUser(uid: uid).updateUserData(
+                            /*if(email != currentEmail || password != currentPassword){
+                              _auth.reAuthenticate(
+                                  (lastName == '') ? currentLastName : lastName,
+                                  (firstName == '') ? currentFirstName : firstName,
+                                  (email == '') ? currentEmail : email,
+                                  (password == '') ? currentPassword : password,
+                                  (pseudo == '') ? currentPseudo : pseudo
+                              );
+                            }else {*/
+                              await BddUser().updateUserData(
                                   (lastName == '') ? currentLastName : lastName,
                                   (firstName == '') ? currentFirstName : firstName,
                                   (email == '') ? currentEmail : email,
                                   (password == '') ? currentPassword : password,
                                   (pseudo == '') ? currentPseudo : pseudo);
+                            //}
                               Navigator.pushAndRemoveUntil(context,
                                   customPageRouteBuilder(Profile()), (
                                       _) => false);

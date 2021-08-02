@@ -19,8 +19,9 @@ class _LoadingScreenState extends State<LoadingScreen> {
   @override
   void initState() {
     super.initState();
-
-    _loadItems();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _loadItems();
+    });
   }
 
   Widget slideIt(BuildContext context, int index, animation) {
@@ -38,10 +39,10 @@ class _LoadingScreenState extends State<LoadingScreen> {
     );
   }
 
-  _loadItems()  {
+  _loadItems()  async {
     for (int item in _fetchedItems) {
       // 1) Wait for one second
-      //await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(Duration(milliseconds: 500));
       // 2) Adding data to actual variable that holds the item.
       _items.add(item);
       // 3) Telling animated list to start animation
@@ -104,15 +105,15 @@ class LoadingScreen extends StatefulWidget {
   _LoadingScreenState createState() => _LoadingScreenState();
 }
 
-class _LoadingScreenState extends State<LoadingScreen> /*with SingleTickerProviderStateMixin*/ {
+class _LoadingScreenState extends State<LoadingScreen> with SingleTickerProviderStateMixin {
 
   late bool _isInitialValue;
   late bool _isInitialValue2;
   late bool _isInitialValue3;
   late bool _isInitialValue4;
   late bool _isInitialValue5;
-  /*late AnimationController controller;
-  late Animation translationAnimation;*/
+  late AnimationController controller;
+  late Animation translationAnimation;
 
   @override
   void initState() {
@@ -124,11 +125,11 @@ class _LoadingScreenState extends State<LoadingScreen> /*with SingleTickerProvid
       _isInitialValue5 = true;
     });
     super.initState();
-    /*controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     translationAnimation = Tween<Offset>(begin: const Offset(0, 1), end:  Offset(0, 0)).animate(controller);
     controller.addListener(() {
       setState(() {});
-    });*/
+    });
     WidgetsBinding.instance!.addPostFrameCallback((_) {
       Timer(Duration(milliseconds: 500), () {});
       setState(() => _isInitialValue = !_isInitialValue);
@@ -225,7 +226,7 @@ class _LoadingScreenState extends State<LoadingScreen> /*with SingleTickerProvid
       child: Container(
         color: Colors.red,
       ),
-    );*/ /*Row(
+    );*//* *//*Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[

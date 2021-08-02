@@ -16,10 +16,9 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<User?>(context);
     return StreamProvider<UserData>.value(
       initialData: UserData(email: '', password: '', pseudo: '', uid: '', firstName: '', lastName: '') ,
-      value: BddUser(uid: user!.uid).userData,
+      value: BddUser().userData,
       child: MaterialApp(debugShowCheckedModeBanner: false,
           home: ProfileMain()),
     );

@@ -42,12 +42,7 @@ class AuthService{
     try{
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User? user = result.user;
-      await BddUser(uid: user!.uid).updateUserData(lastName,firstName,email,password,pseudo);
-      /*await BddUser(uid: user!.uid).updateEmail(email);
-      await BddUser(uid: user.uid).updateLastName(lastName);
-      await BddUser(uid: user.uid).updateFirstName(firstName);
-      await BddUser(uid: user.uid).updatePassword(password);
-      await BddUser(uid: user.uid).updatePseudo(pseudo);*/
+      await BddUser().updateUserData(lastName,firstName,email,password,pseudo);
       return user;
     }catch(e){
       print(e.toString());
@@ -65,7 +60,7 @@ class AuthService{
     }
   }
 
-  Future reAuthenticate(String email,String password) async {
+  Future reAuthenticate(String email, String password, String lastName, String firstName, String pseudo) async {
     try{
       User? user = FirebaseAuth.instance.currentUser!;
       UserCredential authResult = await user.reauthenticateWithCredential(
@@ -74,7 +69,17 @@ class AuthService{
           password: password,
         )
       );
+      await BddUser().updateUserData(lastName,firstName,email,password,pseudo);
         return authResult.user;
+    }catch(e){
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future resetPassword(String email) async{
+    try{
+      return await _auth.sendPasswordResetEmail(email: email);
     }catch(e){
       print(e.toString());
       return null;
