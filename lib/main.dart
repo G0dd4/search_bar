@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'screens/home.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'api/importBook.dart';
+import 'package:search_bar/screens/mainPage.dart';
+import 'package:search_bar/api/importBook.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await initLink();
+  initialBooks = await initBooks();
   runApp(MyApp());
 }
 

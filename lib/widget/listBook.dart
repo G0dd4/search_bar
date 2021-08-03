@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:search_bar/api/importBook.dart';
 import 'books.dart';
 
-class ListBook {
-  Widget getWidget(List<Book> dataToDisplay) {
+class ListBook extends StatefulWidget {
+  final List<Book> books;
+  const ListBook({required this.books});
+
+  @override
+  _ListBook createState() => _ListBook();
+}
+
+class _ListBook extends State<ListBook> {
+  @override
+  @override
+  Widget build(BuildContext context) {
     return Expanded(
       flex: 10,
-      child: filteredBooks.length > 0
+      child: widget.books.length > 0
           ? Card(
               elevation: 8,
               child: ListView.separated(
                 padding: const EdgeInsets.all(8),
-                itemCount: dataToDisplay.length,
+                itemCount: widget.books.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return dataToDisplay[index].transformIntoWidget();
+                  return widget.books[index].transformIntoWidget();
                 },
                 separatorBuilder: (BuildContext context, int index) =>
                     const Divider(),

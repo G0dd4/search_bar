@@ -56,11 +56,8 @@ class _BottomBar extends State<BottomBar> {
                     break;
                   case 1:
                     if (widget.current != 2)
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          customPageRouteBuilder(
-                              MainPage(streamController.stream)),
-                          (_) => false);
+                      Navigator.pushAndRemoveUntil(context,
+                          customPageRouteBuilder(MainPage()), (_) => false);
                     break;
                   default:
                 }

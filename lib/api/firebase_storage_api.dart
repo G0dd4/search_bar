@@ -26,6 +26,15 @@ class FirebaseStorageApi {
         .toList();
   }
 
+  static Future<FirebaseFile> listSingle(String path, String file) async {
+    final ref = FirebaseStorage.instance.ref().child(path).child(file);
+
+    final url = await ref.getDownloadURL();
+    final dataToReturn = FirebaseFile(ref: ref, name: ref.name, url: url);
+
+    return dataToReturn;
+  }
+
   static Future downloadFile(Reference ref) async {
     //final dir = await getApplicationDocumentsDirectory();
     final dir = await getApplicationDocumentsDirectory();

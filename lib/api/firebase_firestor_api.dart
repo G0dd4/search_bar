@@ -25,4 +25,13 @@ class FirebaseFirestoreApi {
 
     return allData;
   }
+
+  static Future<List<Object?>> getDocWhenEqual(
+      String myCollection, String field, String comparedData) async {
+    var ref = FirebaseFirestore.instance.collection(myCollection);
+    QuerySnapshot querySnapshot =
+        await ref.where(field, isEqualTo: comparedData).get();
+
+    return querySnapshot.docs.map((doc) => doc.data()).toList();
+  }
 }

@@ -60,6 +60,14 @@ class Book {
     this.epubFile = myEpub;
   }
 
+  bool contain(Book myBook) {
+    if (this.author == myBook.author && this.title == myBook.title) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Map<String, dynamic> importIntoMap() {
     Map dataToImport = Map<String, dynamic>();
 

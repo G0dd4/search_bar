@@ -11,7 +11,7 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
-  List<Book> newParution = [];
+  late Future<List<Book>> newParution;
 
   void _isConnected() async {
     try {
@@ -36,15 +36,11 @@ class _Home extends State<Home> {
     }
   }
 
-  void _getNewParution() async {
-    newParution = await initNewParution();
-  }
-
   @override
   void initState() {
     super.initState();
+    newParution = initNewParution();
     _isConnected();
-    _getNewParution();
   }
 
   @override
@@ -70,10 +66,17 @@ class _Home extends State<Home> {
                 ),
               ),
             ),
-            BookCarouselTitle(
-              title: "nouveaux Livres",
-              books: newParution,
-            ),
+            FutureBuilder<List<Book>>(
+                future: newParution,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return BookCarouselTitle(
+                      title: "nouveaux Livres",
+                      books: snapshot.data!,
+                    );
+                  }
+                  return Container();
+                }),
           ],
         )),
       ),

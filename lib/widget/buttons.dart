@@ -1,14 +1,18 @@
+import 'dart:async';
+import 'books.dart';
 import 'package:flutter/material.dart';
-import 'package:search_bar/screens/mainPage.dart';
-import 'package:search_bar/api/importBook.dart';
 
 class Buttons {
   final String text;
   bool buttonPressed;
   int index;
   Color color;
+  StreamController<List<Book>> myBooksController;
+  StreamController<int> myIndexController;
+  List<Book> initialBooks;
 
-  Buttons(this.text, this.color, this.buttonPressed, this.index);
+  Buttons(this.text, this.color, this.buttonPressed, this.myIndexController,
+      this.index, this.myBooksController, this.initialBooks);
 
   Widget buttons() {
     return Padding(
@@ -37,28 +41,27 @@ class Buttons {
           this.buttonPressed = !this.buttonPressed;
           if (this.buttonPressed) {
             _preFilterData(this.text);
-            turnOffSearchBar = true;
           } else {
-            filteredBooks = initialBooks;
-            preFilteredBooks = initialBooks;
+            myBooksController.add(this.initialBooks);
           }
-          streamController.add(this.index);
+          myIndexController.add(this.index);
         },
       ),
     );
   }
 
   void _preFilterData(String value) {
-    preFilteredBooks = [];
-    for (int index = 0; index < initialBooks.length; index++) {
-      if (initialBooks[index]
+    List<Book> preFilteredBooks = [];
+    for (int index = 0; index < this.initialBooks.length; index++) {
+      if (this
+              .initialBooks[index]
               .genre
               .toLowerCase()
               .contains(value.toLowerCase()) ==
           true) {
-        preFilteredBooks.add(initialBooks[index]);
+        preFilteredBooks.add(this.initialBooks[index]);
       }
     }
-    filteredBooks = preFilteredBooks;
+    myBooksController.add(preFilteredBooks);
   }
 }

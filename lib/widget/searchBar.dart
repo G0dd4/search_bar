@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:search_bar/api/importBook.dart';
 import 'package:search_bar/widget/books.dart';
 import 'dart:math';
 
+@immutable
+// ignore: must_be_immutable
 class SearchBar extends StatefulWidget {
   String title;
   List<Book> initialBooks;
@@ -238,31 +239,29 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
   void _filterData(String value) {
     print(value);
     List<Book> filteredBooks = [];
-    for (int index = 0; index < preFilteredBooks.length; index++) {
-      if (preFilteredBooks[index]
-                  .shortenAuthor
+    for (int index = 0; index < widget.initialBooks.length; index++) {
+      if (widget.initialBooks[index].shortenAuthor
                   .toLowerCase()
                   .contains(value.toLowerCase()) ==
               true ||
-          preFilteredBooks[index]
-                  .shortenTitle
+          widget.initialBooks[index].shortenTitle
                   .toLowerCase()
                   .contains(value.toLowerCase()) ==
               true) {
-        filteredBooks.add(preFilteredBooks[index]);
+        filteredBooks.add(widget.initialBooks[index]);
       }
     }
     if (filteredBooks.length == 0) {
       List<dynamic> combinedDataAuthorTitle = [];
       List<dynamic> combinedDataTitleAuthor = [];
 
-      for (int index = 0; index < preFilteredBooks.length; index++) {
-        combinedDataAuthorTitle.add(preFilteredBooks[index].shortenAuthor +
+      for (int index = 0; index < widget.initialBooks.length; index++) {
+        combinedDataAuthorTitle.add(widget.initialBooks[index].shortenAuthor +
             " " +
-            preFilteredBooks[index].shortenTitle);
-        combinedDataTitleAuthor.add(preFilteredBooks[index].shortenTitle +
+            widget.initialBooks[index].shortenTitle);
+        combinedDataTitleAuthor.add(widget.initialBooks[index].shortenTitle +
             " " +
-            preFilteredBooks[index].shortenAuthor);
+            widget.initialBooks[index].shortenAuthor);
 
         if (combinedDataAuthorTitle[index]
                     .toLowerCase()
@@ -272,7 +271,7 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
                     .toLowerCase()
                     .contains(value.toLowerCase()) ==
                 true) {
-          filteredBooks.add(preFilteredBooks[index]);
+          filteredBooks.add(widget.initialBooks[index]);
         }
       }
     }
