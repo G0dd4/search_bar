@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:epubx/epubx.dart' as epub;
 import 'package:search_bar/api/epub_api.dart';
+import 'package:search_bar/screens/details.dart';
 
 class Book {
   static const double itemHeight = 170.0;
@@ -69,17 +70,15 @@ class Book {
   }
 
   Map<String, dynamic> importIntoMap() {
-    Map dataToImport = Map<String, dynamic>();
-
-    dataToImport = ({
+    Map<String, dynamic> dataToImport = {
       'Author': this.author,
       'Title': this.title,
       'Parution': Timestamp.fromDate(this.time),
       'epubFile': this.epubDirectory,
       'imageFile': this.imageDirectory,
-    });
+    };
 
-    return dataToImport as Map<String, dynamic>;
+    return dataToImport;
   }
 
   Widget transformIntoWidget() {
@@ -141,17 +140,17 @@ class Book {
     );
   }
 
-  Widget transformIntoTilesWidget() {
+  Widget transformIntoTilesWidget(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         // Les détails s'ouvrent si on appuie sur le container
         GestureDetector(
           onTap: () => {
-            /*Navigator.push(
+            Navigator.push(
               context,
               customPageRouteBuilder(DetailsScreen(book: this)),
-            )*/
+            )
           },
           child: Padding(
             padding: const EdgeInsets.only(
@@ -206,6 +205,31 @@ class Book {
               )),
         ),
       ],
+    );
+  }
+
+  PageRouteBuilder customPageRouteBuilder(Widget pageToGo) {
+    return PageRouteBuilder(
+      transitionDuration: Duration(microseconds: 0),
+      transitionsBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secanimation,
+        Widget child,
+      ) {
+        return ScaleTransition(
+          alignment: Alignment.center,
+          scale: animation,
+          child: child,
+        );
+      },
+      pageBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secanimation,
+      ) {
+        return pageToGo;
+      },
     );
   }
 }

@@ -34,4 +34,9 @@ class FirebaseFirestoreApi {
 
     return querySnapshot.docs.map((doc) => doc.data()).toList();
   }
+
+  static Future<void> deleteDocument(String path, String id) async {
+    var ref = FirebaseFirestore.instance.collection(path).doc(id);
+    ref.delete();
+  }
 }

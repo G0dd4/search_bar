@@ -78,10 +78,6 @@ class _MainPage extends State<MainPage> {
         }
       }
     }
-
-    if (preFilteredBooks.length == 0 || filteredBooks.length == 0) {
-      booksDisplayer = [];
-    }
   }
 
   @override
