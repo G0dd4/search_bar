@@ -1,4 +1,6 @@
-import '../screens/home.dart';
+import 'package:search_bar/screens/myLibrary.dart';
+import 'package:search_bar/screens/profileHome.dart';
+import 'package:search_bar/screens/wrapper.dart';
 import '../screens/mainPage.dart';
 import 'package:flutter/material.dart';
 
@@ -45,6 +47,16 @@ class _BottomBar extends State<BottomBar> {
                 activeIcon: Icon(Icons.explore_rounded),
                 label: 'Explorer',
               ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.book_outlined),
+                activeIcon: Icon(Icons.book_rounded),
+                label: 'My Library',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline),
+                activeIcon: Icon(Icons.person_rounded),
+                label: 'Profil',
+              ),
             ],
             onTap: (index) {
               setState(() {
@@ -52,12 +64,27 @@ class _BottomBar extends State<BottomBar> {
                   case 0:
                     if (widget.current != 0)
                       Navigator.pushAndRemoveUntil(context,
-                          customPageRouteBuilder(Home()), (_) => false);
+                          customPageRouteBuilder(Wrapper()), (_) => false);
                     break;
                   case 1:
+                    if (widget.current != 1)
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          customPageRouteBuilder(
+                              MainPage(streamController.stream)),
+                          (_) => false);
+                    break;
+                  case 2:
                     if (widget.current != 2)
-                      Navigator.pushAndRemoveUntil(context,
-                          customPageRouteBuilder(MainPage()), (_) => false);
+                      Navigator.pushAndRemoveUntil(
+                          context, customPageRouteBuilder(
+                          MyLibrary()), (_) => false);
+                    break;
+                  case 3:
+                    if (widget.current != 3)
+                      Navigator.pushAndRemoveUntil(
+                          context, customPageRouteBuilder(
+                          Profile()), (_) => false);
                     break;
                   default:
                 }
