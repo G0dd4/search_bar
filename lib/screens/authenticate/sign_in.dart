@@ -1,7 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:search_bar/services/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../loadingScreen.dart';
+import '../resetPassword.dart';
 
 
 
@@ -98,10 +100,25 @@ class _SignInState extends State<SignIn>{
                             ),
                             obscureText: true,
                             initialValue:snapshot.data![1],
-                            validator: (val) => val!.isEmpty ? 'Entrez un mot de passe' : null,
+                            validator: (val) => val!.length < 6 ? 'Entrez un mot de passe' : null,
                             onChanged: (val){
                               setState(() => password = val);
                             }
+                        ),
+                        SizedBox(height: 10.0),
+                        RichText(
+                          text: TextSpan(
+                              text: 'Mot de passe oublié ? ',
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.push(
+                                    context,
+                                    customPageRouteBuilder(ResetPassword()),
+                                  );
+                                },
+                              style: TextStyle(
+                                color: Colors.blue,
+                              )),
                         ),
                         SizedBox(height:20.0),
                         TextButton(
@@ -190,7 +207,30 @@ class _SignInState extends State<SignIn>{
     getPassword().then((value) => this.setState(() => lastPassword = value));// here will be printed patientPhone numbers.
   }*/
 
-
+  PageRouteBuilder customPageRouteBuilder(Widget pageToGo) {
+    return PageRouteBuilder(
+      transitionDuration: Duration(microseconds: 0),
+      transitionsBuilder: (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secanimation,
+          Widget child,
+          ) {
+        return ScaleTransition(
+          alignment: Alignment.center,
+          scale: animation,
+          child: child,
+        );
+      },
+      pageBuilder: (
+          BuildContext context,
+          Animation<double> animation,
+          Animation<double> secanimation,
+          ) {
+        return pageToGo;
+      },
+    );
+  }
 
   }
 

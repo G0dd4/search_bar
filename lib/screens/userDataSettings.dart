@@ -1,9 +1,12 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:search_bar/models/userData.dart';
 import 'package:search_bar/screens/profileHome.dart';
-import 'package:search_bar/services/auth.dart';
 import 'package:search_bar/services/bddUsers.dart';
+
+import 'changeEmail.dart';
+import 'changePassword.dart';
 
 class UserDataSettings extends StatefulWidget {
   const UserDataSettings({Key? key}) : super(key: key);
@@ -12,13 +15,32 @@ class UserDataSettings extends StatefulWidget {
   _UserDataSettingsState createState() => _UserDataSettingsState();
 }
 
-
 class _UserDataSettingsState extends State<UserDataSettings> {
+  @override
+  Widget build(BuildContext context) {
+    return StreamProvider<UserData>.value(
+      initialData: UserData(email: '', password: '', pseudo: '', uid: '', firstName: '', lastName: '') ,
+      value: BddUser().userData,
+      child: MaterialApp(debugShowCheckedModeBanner: false,
+          home: UserDataSettingsMain()),
+    );
+  }
+}
+
+
+
+class UserDataSettingsMain extends StatefulWidget {
+  const UserDataSettingsMain({Key? key}) : super(key: key);
+
+  @override
+  _UserDataSettingsMainState createState() => _UserDataSettingsMainState();
+}
+
+
+class _UserDataSettingsMainState extends State<UserDataSettingsMain> {
 
   final _formKey = GlobalKey<FormState>();
   bool _isEnabled = false;
-  String email ='';
-  String password ='';
   String lastName='';
   String firstName='';
   String pseudo='';
@@ -27,10 +49,7 @@ class _UserDataSettingsState extends State<UserDataSettings> {
   @override
   Widget build(BuildContext context) {
     final userData = Provider.of<UserData>(context);
-    final String uid = userData.uid;
-    final AuthService _auth = AuthService();
     String currentEmail =userData.email;
-    String currentPassword =userData.password;
     String currentLastName=userData.lastName;
     String currentFirstName=userData.firstName;
     String currentPseudo=userData.pseudo;
@@ -42,7 +61,10 @@ class _UserDataSettingsState extends State<UserDataSettings> {
         leading: IconButton(
             icon: Icon(Icons.arrow_back_ios,color: Color(0xFF505050)),
           onPressed: (){
-              Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Profile()),
+            );
           }
         ),
         backgroundColor: Color(0xFFFCFCFC),
@@ -111,30 +133,44 @@ class _UserDataSettingsState extends State<UserDataSettings> {
                   ),
                   SizedBox(height:20.0),
                   TextFormField(
-                      enabled: _isEnabled,
+                      enabled: false,
                       initialValue: currentEmail,
                       decoration: const InputDecoration(
                         //hintText: 'Adresse mail',
                         labelText: 'Adresse mail',
                       ),
-                      validator: (val) => val!.isEmpty ? 'Entrez une adresse mail' : null,
-                      onChanged: (val){
-                        setState(() => email = val);
-                      }
+                      //validator: (val) => val!.isEmpty ? 'Entrez une adresse mail' : null,
+                      onChanged: (val){}
                   ),
                   SizedBox(height:20.0),
-                  TextFormField(
-                      enabled: _isEnabled,
-                      initialValue: currentPassword,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        //hintText: 'Mot de passe',
-                        labelText: 'Mot de passe',
-                      ),
-                      validator: (val) => val!.isEmpty ? 'Entrez un mot de passe' : null,
-                      onChanged: (val){
-                        setState(() => password = val);
-                      }
+                  RichText(
+                    text: TextSpan(
+                        text: 'Modifier le mail ',
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.push(
+                              context,
+                              customPageRouteBuilder(ChangeEmail()),
+                            );
+                          },
+                        style: TextStyle(
+                          color: Colors.blue,
+                        )),
+                  ),
+                  SizedBox(height:20.0),
+                  RichText(
+                    text: TextSpan(
+                        text: 'Modifier le mot de passe ',
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.push(
+                              context,
+                              customPageRouteBuilder(ChangePassword()),
+                            );
+                          },
+                        style: TextStyle(
+                          color: Colors.blue,
+                        )),
                   ),
                   SizedBox(height:20.0),
                   TextButton(
@@ -169,9 +205,8 @@ class _UserDataSettingsState extends State<UserDataSettings> {
                               await BddUser().updateUserData(
                                   (lastName == '') ? currentLastName : lastName,
                                   (firstName == '') ? currentFirstName : firstName,
-                                  (email == '') ? currentEmail : email,
-                                  (password == '') ? currentPassword : password,
-                                  (pseudo == '') ? currentPseudo : pseudo);
+                                  currentEmail,
+                                  (pseudo == '') ? currentPseudo : pseudo,);
                             //}
                               Navigator.pushAndRemoveUntil(context,
                                   customPageRouteBuilder(Profile()), (

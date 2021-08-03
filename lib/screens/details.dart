@@ -18,11 +18,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   @override
   void initState(){
-    _set();
     print("1");
     print(list);
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _set();
       setState(() => {});
     });
   }

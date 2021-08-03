@@ -33,12 +33,11 @@ class BddUser{
     return await usersCollection.doc(uid).set({'Pseudo' : pseudo});
   }*/
 
-  Future updateUserData(String lastName,String firstName,String email,String password,String pseudo) async{
+  Future updateUserData(String lastName,String firstName,String email,String pseudo) async{
     return await usersCollection.doc(uid).set({
       'Nom' : lastName,
       'Prénom' : firstName,
       'Email' : email,
-      'Mot de passe' : password,
       'Pseudo' : pseudo
     });
   }

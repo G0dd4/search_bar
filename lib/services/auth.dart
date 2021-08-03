@@ -42,7 +42,7 @@ class AuthService{
     try{
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User? user = result.user;
-      await BddUser().updateUserData(lastName,firstName,email,password,pseudo);
+      await BddUser().updateUserData(lastName,firstName,email,pseudo);
       return user;
     }catch(e){
       print(e.toString());
@@ -60,7 +60,7 @@ class AuthService{
     }
   }
 
-  Future reAuthenticate(String email, String password, String lastName, String firstName, String pseudo) async {
+  Future updateEmail(String email, String password,String newEmail) async {
     try{
       User? user = FirebaseAuth.instance.currentUser!;
       UserCredential authResult = await user.reauthenticateWithCredential(
@@ -69,8 +69,27 @@ class AuthService{
           password: password,
         )
       );
-      await BddUser().updateUserData(lastName,firstName,email,password,pseudo);
-        return authResult.user;
+        User? user2 =  authResult.user;
+        user2!.updateEmail(newEmail);
+        return user2;
+    }catch(e){
+      print(e.toString());
+      return null;
+    }
+  }
+
+  Future updatePassword(String email, String password,String newPassword) async {
+    try{
+      User? user = FirebaseAuth.instance.currentUser!;
+      UserCredential authResult = await user.reauthenticateWithCredential(
+          EmailAuthProvider.credential(
+            email: email,
+            password: password,
+          )
+      );
+      User? user2 =  authResult.user;
+      user2!.updatePassword(newPassword);
+      return user2;
     }catch(e){
       print(e.toString());
       return null;

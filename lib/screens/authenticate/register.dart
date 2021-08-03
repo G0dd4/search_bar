@@ -108,7 +108,7 @@ class _RegisterState extends State<Register> {
                         //hintText: 'Mot de passe',
                         labelText: 'Mot de passe',
                       ),
-                      validator: (val) => val!.isEmpty ? 'Entrez un mot de passe' : null,
+                      validator: (val) => val!.length < 6 ? 'Entrez un mot de passe de plus de 6 caractères' : null,
                       onChanged: (val){
                         setState(() => password = val);
                       }
