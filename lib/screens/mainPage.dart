@@ -107,7 +107,7 @@ class _MainPage extends State<MainPage> {
             buttonBooksData, initialBooks),
         Buttons('fantasy', Colors.green, false, buttonIndexData, 4,
             buttonBooksData, initialBooks),
-        Buttons('aventure', Colors.black, false, buttonIndexData, 2,
+        Buttons('aventure', Colors.black, false, buttonIndexData, 5,
             buttonBooksData, initialBooks),
       ];
       setState(() {
