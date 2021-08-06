@@ -5,6 +5,7 @@ import 'package:epubx/epubx.dart' as epub;
 import 'package:search_bar/api/firebase_storage_api.dart';
 import 'package:search_bar/model/firebase_file.dart';
 import 'package:search_bar/screens/details.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class Book {
   static const double itemHeight = 170.0;
@@ -28,22 +29,19 @@ class Book {
   late String genre;
   late epub.EpubBook epubFile;
 
-
   Book.map(Map data) {
     this.title = data['Title'];
     if (title.length > 13) {
       shortenTitle = title.replaceRange(13, null, '');
       shortenTitle = shortenTitle + "...";
-    }
-    else
+    } else
       shortenTitle = title;
 
     this.author = data['Author'];
     if (author.length > 15) {
       shortenAuthor = author.replaceRange(15, null, '');
       shortenAuthor = shortenAuthor + "...";
-    }
-    else
+    } else
       shortenAuthor = author;
 
     this.epubDirectory = data['epubFile'];
@@ -54,9 +52,9 @@ class Book {
     Timestamp stamp = data['Parution'];
     this.time = stamp.toDate();
 
+    if (imageDirectory == null) {}
     imageStorage = FirebaseStorageApi.listSingle("Images", data['imageFile']);
     epubStorage = FirebaseStorageApi.listSingle("Epubs", data['epubFile']);
-
   }
 
   void _importEpub(epub.EpubBook myEpub) {
@@ -98,14 +96,15 @@ class Book {
               // Image du livre
               FutureBuilder<FirebaseFile>(
                 future: imageStorage,
-                builder: (context, snapshot){
-                  if(snapshot.hasData){
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
                     return Container(
                       height: itemHeight,
                       width: itemWidth,
                       decoration: new BoxDecoration(
                         image: new DecorationImage(
-                          image: new Image.network(snapshot.data!.url).image,
+                          image: new CachedNetworkImageProvider(
+                              snapshot.data!.url),
                           fit: BoxFit.fill,
                         ),
                         boxShadow: [
@@ -115,27 +114,13 @@ class Book {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     );
-                  }
-                  else{
+                  } else {
                     return Container(
                       height: itemHeight,
                       width: itemWidth,
-                      decoration: new BoxDecoration(
-                        image: new DecorationImage(
-                          image: new NetworkImage("https://complianz.io/wp-content/uploads/2019/03/placeholder-300x202.jpg"),
-                          fit: BoxFit.fill,
-                        ),
-                        boxShadow: [
-                          BoxShadow(blurRadius: 5, offset: Offset(4.0, 4.0)),
-                        ],
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
                     );
                   }
-
                 },
-                
               ),
             ],
           ),
@@ -189,14 +174,15 @@ class Book {
                 // Image du livre
                 FutureBuilder<FirebaseFile>(
                   future: imageStorage,
-                  builder: (context, snapshot){
-                    if(snapshot.hasData){
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
                       return Container(
                         height: itemHeight,
                         width: itemWidth,
                         decoration: new BoxDecoration(
                           image: new DecorationImage(
-                            image: new Image.network(snapshot.data!.url).image,
+                            image: new CachedNetworkImageProvider(
+                                snapshot.data!.url),
                             fit: BoxFit.fill,
                           ),
                           boxShadow: [
@@ -206,27 +192,14 @@ class Book {
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       );
-                    }
-                    else{
+                    } else {
                       return Container(
                         height: itemHeight,
                         width: itemWidth,
-                        decoration: new BoxDecoration(
-                          image: new DecorationImage(
-                            image: Image.network("https://complianz.io/wp-content/uploads/2019/03/placeholder-300x202.jpg").image,
-                            fit: BoxFit.fill,
-                          ),
-                          boxShadow: [
-                            BoxShadow(blurRadius: 5, offset: Offset(4.0, 4.0)),
-                          ],
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
+                        color: Color(0xFF9B9B9B),
                       );
                     }
-
                   },
-
                 ),
               ],
             ),

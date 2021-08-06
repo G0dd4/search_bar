@@ -20,7 +20,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   Future<bool> verifState() async {
     var ref = FirebaseFirestore.instance
-        .collection("Utilisateurs/"+FirebaseAuth.instance.currentUser!.uid +"/Ma bibliothèque")
+        .collection("Utilisateurs/" +
+            FirebaseAuth.instance.currentUser!.uid +
+            "/Ma bibliothèque")
         .where("Author", isEqualTo: widget.book.author)
         .where("Title", isEqualTo: widget.book.title);
 
@@ -72,8 +74,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         // Image
                         FutureBuilder<FirebaseFile>(
                           future: widget.book.imageStorage,
-                          builder: (context, snapshot){
-                            if(snapshot.hasData){
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
                               return Container(
                                 height: 150,
                                 width: boxwidth,
@@ -84,26 +86,23 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                        blurRadius: 5, offset: Offset(4.0, 4.0)),
+                                        blurRadius: 5,
+                                        offset: Offset(4.0, 4.0)),
                                   ],
                                   borderRadius: BorderRadius.only(
                                       bottomLeft: Radius.zero,
                                       bottomRight: Radius.zero),
                                 ),
                               );
-                            }
-                            else{
+                            } else {
                               return Container(
                                 height: 150,
                                 width: boxwidth,
                                 decoration: new BoxDecoration(
-                                  image: new DecorationImage(
-                                    image: new AssetImage("placeholder.png"),
-                                    fit: BoxFit.cover,
-                                  ),
                                   boxShadow: [
                                     BoxShadow(
-                                        blurRadius: 5, offset: Offset(4.0, 4.0)),
+                                        blurRadius: 5,
+                                        offset: Offset(4.0, 4.0)),
                                   ],
                                   borderRadius: BorderRadius.only(
                                       bottomLeft: Radius.zero,
@@ -140,7 +139,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       IconButton(
                                         onPressed: () {
                                           FirebaseFirestoreApi.deleteDocument(
-                                              "Utilisateurs/"+FirebaseAuth.instance.currentUser!.uid+"/Ma bibliothèque",
+                                              "Utilisateurs/" +
+                                                  FirebaseAuth.instance
+                                                      .currentUser!.uid +
+                                                  "/Ma bibliothèque",
                                               this.id);
                                           setState(() {});
                                         },
@@ -172,7 +174,10 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       IconButton(
                                         onPressed: () {
                                           FirebaseFirestoreApi.addData(
-                                              "Utilisateurs/"+FirebaseAuth.instance.currentUser!.uid+"/Ma bibliothèque",
+                                              "Utilisateurs/" +
+                                                  FirebaseAuth.instance
+                                                      .currentUser!.uid +
+                                                  "/Ma bibliothèque",
                                               widget.book.importIntoMap());
                                           setState(() {});
                                         },

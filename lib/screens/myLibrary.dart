@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:search_bar/widget/bookCarousel.dart';
 import 'package:search_bar/widget/books.dart';
 import 'package:search_bar/widget/bottomBar.dart';
+import 'package:search_bar/widget/loadingPage.dart';
 import 'package:search_bar/widget/searchBar.dart';
 
 StreamController<List<Book>> streamControllerSearchBarUserBook =
@@ -18,7 +19,6 @@ class MyLibraryMain extends StatefulWidget {
 }
 
 class _MyLibraryMainState extends State<MyLibraryMain> {
-
   late StreamSubscription streamSubscriptionBook;
   late StreamSubscription streamSubscriptionRealTime;
 
@@ -28,16 +28,15 @@ class _MyLibraryMainState extends State<MyLibraryMain> {
           FirebaseAuth.instance.currentUser!.uid +
           "/Ma bibliothèque")
       .snapshots();
-  int oldLength = 0;
+
+  bool isLoaded = false;
 
   List<Book> userBooks = [];
   List<Book> filteredBooks = [];
 
   void _updateUserBook(param) {
-      filteredBooks = param;
-      setState(() {
-
-      });
+    filteredBooks = param;
+    setState(() {});
   }
 
   void _initUserBook(param) {
@@ -46,13 +45,14 @@ class _MyLibraryMainState extends State<MyLibraryMain> {
       Map<String, dynamic> a = element.data() as Map<String, dynamic>;
       userBooks.add(Book.map(a));
     });
-
+    isLoaded = true;
     setState(() {
       filteredBooks = userBooks;
     });
   }
+
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     streamSubscriptionRealTime.cancel();
     streamSubscriptionBook.cancel();
@@ -72,22 +72,29 @@ class _MyLibraryMainState extends State<MyLibraryMain> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(children: <Widget>[
-          SearchBar(
-            title: 'Ma bibliothèque',
-            initialBooks: userBooks,
-            streamController: streamControllerSearchBarUserBook,
-          ),
-          BookCarousel(
-            books: filteredBooks,
-          )
-        ]),
-      ),
-      bottomNavigationBar: BottomBar(
-        current: 2,
-      ),
-    );
+    if (isLoaded == true) {
+      return Scaffold(
+        body: SafeArea(
+          child: Column(children: <Widget>[
+            SearchBar(
+              title: 'Ma bibliothèque',
+              initialBooks: userBooks,
+              streamController: streamControllerSearchBarUserBook,
+            ),
+            BookCarousel(
+              books: filteredBooks,
+            )
+          ]),
+        ),
+        bottomNavigationBar: BottomBar(
+          current: 2,
+        ),
+      );
+    } else {
+      return LoadingPage(
+        index: 2,
+        title: "Ma bibliothèque",
+      );
+    }
   }
 }

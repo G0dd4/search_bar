@@ -68,23 +68,20 @@ class _BottomBar extends State<BottomBar> {
                     break;
                   case 1:
                     if (widget.current != 1)
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          customPageRouteBuilder(
-                              MainPage()),
-                          (_) => false);
+                      Navigator.pushAndRemoveUntil(context,
+                          customPageRouteBuilder(MainPage()), (_) => false);
                     break;
                   case 2:
                     if (widget.current != 2)
                       Navigator.pushAndRemoveUntil(
-                          context, customPageRouteBuilder(
-                          MyLibraryMain()), (_) => false);
+                          context,
+                          customPageRouteBuilder(MyLibraryMain()),
+                          (_) => false);
                     break;
                   case 3:
                     if (widget.current != 3)
-                      Navigator.pushAndRemoveUntil(
-                          context, customPageRouteBuilder(
-                          ProfileMain()), (_) => false);
+                      Navigator.pushAndRemoveUntil(context,
+                          customPageRouteBuilder(ProfileMain()), (_) => false);
                     break;
                   default:
                 }
@@ -96,7 +93,7 @@ class _BottomBar extends State<BottomBar> {
 
   PageRouteBuilder customPageRouteBuilder(Widget pageToGo) {
     return PageRouteBuilder(
-      transitionDuration: Duration(microseconds: 0),
+      transitionDuration: Duration(milliseconds: 0),
       transitionsBuilder: (
         BuildContext context,
         Animation<double> animation,

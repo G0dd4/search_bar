@@ -14,13 +14,14 @@ class ProfileMain extends StatefulWidget {
 }
 
 class _ProfileMainState extends State<ProfileMain> {
-
-
-  Future<Map<String,dynamic>> intUserInfo() async{
-    return await FirebaseFirestoreApi.getDocument("Utilisateurs", FirebaseAuth.instance.currentUser!.uid) as Map<String,dynamic>;
+  Future<Map<String, dynamic>> intUserInfo() async {
+    return await FirebaseFirestoreApi.getDocument(
+            "Utilisateurs", FirebaseAuth.instance.currentUser!.uid)
+        as Map<String, dynamic>;
   }
+
   @override
-  void initState(){
+  void initState() {
     super.initState();
   }
 
@@ -45,46 +46,38 @@ class _ProfileMainState extends State<ProfileMain> {
               ),
               //Text('Utilisateur: ' + email),
               // Bouton de déconnexion
-              Expanded (
-                child: FutureBuilder <Map<String,dynamic>>(
-                  future: intUserInfo(),
-                  builder: (context, snapshot) {
-
-                    if(snapshot.hasData)
-                      return ListView(
-                      children: ListTile.divideTiles(
-                          context: context,
-                          tiles: [
+              Expanded(
+                child: FutureBuilder<Map<String, dynamic>>(
+                    future: intUserInfo(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData)
+                        return ListView(
+                          children:
+                              ListTile.divideTiles(context: context, tiles: [
                             ListTile(
                                 leading: Icon(Icons.manage_accounts,
                                     color: Color(0xFF9B9B9B)),
-                                title: Text(
-                                    snapshot.data!['Nom'] + ' ' + snapshot.data!['Prénom']),
+                                title: Text(snapshot.data!['Nom'] +
+                                    ' ' +
+                                    snapshot.data!['Prénom']),
                                 onTap: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) =>
-                                        new UserDataSettingsMain(userInfo: snapshot.data!)),
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            new UserDataSettingsMain()),
                                   );
-                                }
-                            ),
+                                }),
+                            ListTile(title: Text('...'), onTap: () {}),
+                            ListTile(title: Text('...'), onTap: () {}),
                             ListTile(
-                                title: Text('...'),
-                                onTap: () {}
-                            ),
-                            ListTile(
-                                title: Text('...'),
-                                onTap: () {}
-                            ),
-                            ListTile(
-                                leading: Icon(
-                                    Icons.settings, color: Color(0xFF9B9B9B)),
+                                leading: Icon(Icons.settings,
+                                    color: Color(0xFF9B9B9B)),
                                 title: Text('Paramètres'),
-                                onTap: () {}
-                            ),
+                                onTap: () {}),
                             ListTile(
-                              leading: Icon(
-                                  Icons.logout, color: Color(0xFF9B9B9B)),
+                              leading:
+                                  Icon(Icons.logout, color: Color(0xFF9B9B9B)),
                               title: Text('Déconnexion'),
                               onTap: () {
                                 showDialog(
@@ -94,12 +87,10 @@ class _ProfileMainState extends State<ProfileMain> {
                                 );
                               },
                             ),
-                          ]
-                      ).toList(),
-                    );
-                    return Container();
-                  }
-                ),
+                          ]).toList(),
+                        );
+                      return Container();
+                    }),
               ),
             ],
           ),
@@ -123,8 +114,8 @@ class _ProfileMainState extends State<ProfileMain> {
         new TextButton(
           onPressed: () async {
             await _auth.signOut();
-            Navigator.pushAndRemoveUntil(context,
-                customPageRouteBuilder(Wrapper()), (_) => false);
+            Navigator.pushAndRemoveUntil(
+                context, customPageRouteBuilder(Wrapper()), (_) => false);
           },
           child: const Text('Oui', style: TextStyle(color: Colors.blue)),
         ),
@@ -142,11 +133,11 @@ class _ProfileMainState extends State<ProfileMain> {
     return PageRouteBuilder(
       transitionDuration: Duration(microseconds: 0),
       transitionsBuilder: (
-          BuildContext context,
-          Animation<double> animation,
-          Animation<double> secanimation,
-          Widget child,
-          ) {
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secanimation,
+        Widget child,
+      ) {
         return ScaleTransition(
           alignment: Alignment.center,
           scale: animation,
@@ -154,10 +145,10 @@ class _ProfileMainState extends State<ProfileMain> {
         );
       },
       pageBuilder: (
-          BuildContext context,
-          Animation<double> animation,
-          Animation<double> secanimation,
-          ) {
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secanimation,
+      ) {
         return pageToGo;
       },
     );

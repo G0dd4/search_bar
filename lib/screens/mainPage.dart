@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:search_bar/widget/bottomBar.dart';
 import 'package:search_bar/widget/listBook.dart';
+import 'package:search_bar/widget/loadingPage.dart';
 import '../widget/searchBar.dart';
 import '../widget/buttons.dart';
 import '../widget/carouselButtons.dart';
@@ -17,10 +18,6 @@ StreamController<List<Book>> buttonBooksData =
 StreamController<List<Book>> searchBarData =
     StreamController<List<Book>>.broadcast();
 
-bool turnOffSearchBar = false;
-
-List<Book> initialBooks = [];
-
 @immutable
 class MainPage extends StatefulWidget {
   @override
@@ -28,9 +25,8 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPage extends State<MainPage> {
-  Stream<QuerySnapshot> myCollectionRealTime = FirebaseFirestore.instance
-      .collection("Livres")
-      .snapshots();
+  Stream<QuerySnapshot> myCollectionRealTime =
+      FirebaseFirestore.instance.collection("Livres").snapshots();
   List<Buttons> buttons = [];
 
   final Stream<List<Book>> streamSearchBar = searchBarData.stream;
@@ -47,6 +43,8 @@ class _MainPage extends State<MainPage> {
   List<Book> preFilteredBooks = [];
   List<Book> filteredBooks = [];
   List<Book> booksDisplayer = [];
+
+  bool isLoaded = false;
 
   void _updateStateButton(int param) {
     setState(() {
@@ -89,39 +87,15 @@ class _MainPage extends State<MainPage> {
   void initState() {
     super.initState();
 
-
-    myCollectionRealTime.forEach((param) {
-      param.docs.forEach((element) {
-        Map<String,dynamic> a = element.data() as Map<String,dynamic>;
-        initialBooks.add(Book.map(a));
-      });
-      booksDisplayer = initialBooks;
-      preFilteredBooks = initialBooks;
-      filteredBooks = initialBooks;
-      buttons = [
-        Buttons('science-fiction', Colors.red, false, buttonIndexData, 1,
-            buttonBooksData, initialBooks),
-        Buttons('romance', Colors.amber, false, buttonIndexData, 2,
-            buttonBooksData, initialBooks),
-        Buttons('mystère', Colors.teal, false, buttonIndexData, 3,
-            buttonBooksData, initialBooks),
-        Buttons('fantasy', Colors.green, false, buttonIndexData, 4,
-            buttonBooksData, initialBooks),
-        Buttons('aventure', Colors.black, false, buttonIndexData, 2,
-            buttonBooksData, initialBooks),
-      ];
-      setState(() {
-
-      });
-    });
-    /*
     myCollectionRealTime.listen((param) {
-      _initInitialBooks(param);
+      _importBooks(param);
     });
-    */
-    buttonIndexStreamSubscription = streamButtonIndex.listen((param) {
-      _updateStateButton(param);
-    });
+
+    buttonIndexStreamSubscription = streamButtonIndex.listen(
+      (param) {
+        _updateStateButton(param);
+      },
+    );
 
     searchBarSubscription = streamSearchBar.listen((param) {
       _updateStateSearchBar(param);
@@ -130,6 +104,31 @@ class _MainPage extends State<MainPage> {
     buttonBooksStreamSubscription = streamButtonData.listen((param) {
       _updateStateButtonPrefilter(param);
     });
+  }
+
+  void _importBooks(param) {
+    param.docs.forEach((element) {
+      var a = element.data() as Map<String, dynamic>;
+      initialBooks.add(Book.map(a));
+    });
+    buttons = [
+      Buttons('science-fiction', Colors.red, false, buttonIndexData, 1,
+          buttonBooksData, initialBooks),
+      Buttons('romance', Colors.amber, false, buttonIndexData, 2,
+          buttonBooksData, initialBooks),
+      Buttons('mystère', Colors.teal, false, buttonIndexData, 3,
+          buttonBooksData, initialBooks),
+      Buttons('fantasy', Colors.green, false, buttonIndexData, 4,
+          buttonBooksData, initialBooks),
+      Buttons('aventure', Colors.black, false, buttonIndexData, 5,
+          buttonBooksData, initialBooks),
+    ];
+    booksDisplayer = initialBooks;
+    preFilteredBooks = initialBooks;
+    filteredBooks = initialBooks;
+    isLoaded = true;
+
+    setState(() {});
   }
 
   @override
@@ -141,29 +140,32 @@ class _MainPage extends State<MainPage> {
     super.dispose();
   }
 
-
   Widget build(BuildContext context) {
-     return Scaffold(
-      body: SafeArea(
-        /*************************************
+    if (isLoaded == true) {
+      return Scaffold(
+        body: SafeArea(
+          /*************************************
          * Création d'un objet Column        *
          * pour placer nos différents Widget *
          *************************************/
-        child: Column(
-          children: [
-            SearchBar(
-              title: "Explorer",
-              initialBooks: initialBooks,
-              streamController: searchBarData,
-            ),
-            carouselButtons.carouselWidget(buttons),
-            ListBook(books: booksDisplayer),
-          ],
+          child: Column(
+            children: [
+              SearchBar(
+                title: "Explorer",
+                initialBooks: initialBooks,
+                streamController: searchBarData,
+              ),
+              carouselButtons.carouselWidget(buttons),
+              ListBook(books: booksDisplayer),
+            ],
+          ),
         ),
-      ),
-      bottomNavigationBar: BottomBar(
-        current: 1,
-      ),
-    );
+        bottomNavigationBar: BottomBar(
+          current: 1,
+        ),
+      );
+    } else {
+      return LoadingPage(title: "Explorer", index: 1);
+    }
   }
 }
