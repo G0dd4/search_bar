@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:search_bar/widget/books.dart';
 import 'package:flutter/material.dart';
 import '../widget/bookCarouselTitle.dart';
 import '../widget/bottomBar.dart';
-import 'package:search_bar/api/importBook.dart';
+
 
 class Home extends StatefulWidget {
   @override
@@ -11,8 +13,13 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
-  late Future<List<Book>> newParution;
+  Stream<QuerySnapshot> myCollectionRealTime = FirebaseFirestore.instance
+      .collection("Livres")
+      .orderBy("Parution", descending: true)
+      .limitToLast(5)
+      .snapshots();
 
+  List<Book> newParution = [];
   void _isConnected() async {
     try {
       final result = await InternetAddress.lookup('google.com');
@@ -39,7 +46,6 @@ class _Home extends State<Home> {
   @override
   void initState() {
     super.initState();
-    newParution = initNewParution();
     _isConnected();
   }
 
@@ -66,17 +72,33 @@ class _Home extends State<Home> {
                 ),
               ),
             ),
-            FutureBuilder<List<Book>>(
-                future: newParution,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return BookCarouselTitle(
-                      title: "nouveaux Livres",
-                      books: snapshot.data!,
+            StreamBuilder<QuerySnapshot<Object?>>(
+              stream: myCollectionRealTime,
+                builder: (context, snapshot){
+                  if(snapshot.hasError){
+                    return Center(
+                      child: Text("Erreur"),
                     );
                   }
+                  if(snapshot.hasData){
+                    snapshot.data!.docs.map((e){
+                      var a = e.data() as Map<String,dynamic>;
+                      print(a);
+                    });
+                    snapshot.data!.docs.forEach((element) {
+                      Map<String,dynamic> a = element.data() as Map<String,dynamic>;
+                      newParution.add(Book.map(a));
+                    });
+                    return BookCarouselTitle(
+                      books: newParution,
+                      title: "Dernières parutions",
+                    );
+
+
+                  }
                   return Container();
-                }),
+                }
+            ),
           ],
         )),
       ),

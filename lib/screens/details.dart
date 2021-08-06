@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:search_bar/model/firebase_file.dart';
 import 'package:search_bar/widget/books.dart';
 import 'package:search_bar/api/firebase_firestor_api.dart';
 
@@ -18,7 +20,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   Future<bool> verifState() async {
     var ref = FirebaseFirestore.instance
-        .collection("Utilisateurs/Id_test_Yannis/Ma bibliothèque")
+        .collection("Utilisateurs/"+FirebaseAuth.instance.currentUser!.uid +"/Ma bibliothèque")
         .where("Author", isEqualTo: widget.book.author)
         .where("Title", isEqualTo: widget.book.title);
 
@@ -68,22 +70,48 @@ class _DetailsScreenState extends State<DetailsScreen> {
                     Stack(
                       children: [
                         // Image
-                        Container(
-                          height: 150,
-                          width: boxwidth,
-                          decoration: new BoxDecoration(
-                            image: new DecorationImage(
-                              image: widget.book.image.image,
-                              fit: BoxFit.cover,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                  blurRadius: 5, offset: Offset(4.0, 4.0)),
-                            ],
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.zero,
-                                bottomRight: Radius.zero),
-                          ),
+                        FutureBuilder<FirebaseFile>(
+                          future: widget.book.imageStorage,
+                          builder: (context, snapshot){
+                            if(snapshot.hasData){
+                              return Container(
+                                height: 150,
+                                width: boxwidth,
+                                decoration: new BoxDecoration(
+                                  image: new DecorationImage(
+                                    image: new NetworkImage(snapshot.data!.url),
+                                    fit: BoxFit.cover,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        blurRadius: 5, offset: Offset(4.0, 4.0)),
+                                  ],
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.zero,
+                                      bottomRight: Radius.zero),
+                                ),
+                              );
+                            }
+                            else{
+                              return Container(
+                                height: 150,
+                                width: boxwidth,
+                                decoration: new BoxDecoration(
+                                  image: new DecorationImage(
+                                    image: new AssetImage("placeholder.png"),
+                                    fit: BoxFit.cover,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        blurRadius: 5, offset: Offset(4.0, 4.0)),
+                                  ],
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.zero,
+                                      bottomRight: Radius.zero),
+                                ),
+                              );
+                            }
+                          },
                         ),
                         // Boutons
                         FutureBuilder<bool>(
@@ -112,7 +140,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       IconButton(
                                         onPressed: () {
                                           FirebaseFirestoreApi.deleteDocument(
-                                              "Utilisateurs/Id_test_Yannis/Ma bibliothèque",
+                                              "Utilisateurs/"+FirebaseAuth.instance.currentUser!.uid+"/Ma bibliothèque",
                                               this.id);
                                           setState(() {});
                                         },
@@ -143,8 +171,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                       ),
                                       IconButton(
                                         onPressed: () {
-                                          FirebaseFirestoreApi.setData(
-                                              "Utilisateurs/Id_test_Yannis/Ma bibliothèque",
+                                          FirebaseFirestoreApi.addData(
+                                              "Utilisateurs/"+FirebaseAuth.instance.currentUser!.uid+"/Ma bibliothèque",
                                               widget.book.importIntoMap());
                                           setState(() {});
                                         },

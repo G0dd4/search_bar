@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:search_bar/models/userData.dart';
+import 'package:search_bar/api/firebase_firestor_api.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:search_bar/screens/userDataSettings.dart';
 import 'package:search_bar/screens/wrapper.dart';
 import 'package:search_bar/services/auth.dart';
@@ -14,11 +14,18 @@ class ProfileMain extends StatefulWidget {
 }
 
 class _ProfileMainState extends State<ProfileMain> {
+
+
+  Future<Map<String,dynamic>> intUserInfo() async{
+    return await FirebaseFirestoreApi.getDocument("Utilisateurs", FirebaseAuth.instance.currentUser!.uid) as Map<String,dynamic>;
+  }
+  @override
+  void initState(){
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    final userData = Provider.of<UserData>(context);
-
     return Scaffold(
       backgroundColor: Color(0xFFFCFCFC),
       body: SafeArea(
@@ -38,46 +45,60 @@ class _ProfileMainState extends State<ProfileMain> {
               ),
               //Text('Utilisateur: ' + email),
               // Bouton de déconnexion
-              Expanded(
-                child:ListView(
-                  children: ListTile.divideTiles(
-                      context: context,
-                      tiles: [
-                        ListTile(
-                            leading: Icon(Icons.manage_accounts, color: Color(0xFF9B9B9B)),
-                            title: Text(userData.lastName + ' ' + userData.firstName),
-                            onTap: (){
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => UserDataSettings()),
-                              );
-                            }
-                        ),
-                        ListTile(
-                            title: Text('...'),
-                            onTap: (){}
-                        ),
-                        ListTile(
-                            title: Text('...'),
-                            onTap: (){}
-                        ),
-                        ListTile(
-                            leading: Icon(Icons.settings, color: Color(0xFF9B9B9B)),
-                            title: Text('Paramètres'),
-                            onTap: (){}
-                        ),
-                        ListTile(
-                          leading: Icon(Icons.logout, color: Color(0xFF9B9B9B)),
-                          title: Text('Déconnexion'),
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) => _popUp(context),
-                            );
-                          },
-                        ),
-                      ]
-                  ).toList(),
+              Expanded (
+                child: FutureBuilder <Map<String,dynamic>>(
+                  future: intUserInfo(),
+                  builder: (context, snapshot) {
+
+                    if(snapshot.hasData)
+                      return ListView(
+                      children: ListTile.divideTiles(
+                          context: context,
+                          tiles: [
+                            ListTile(
+                                leading: Icon(Icons.manage_accounts,
+                                    color: Color(0xFF9B9B9B)),
+                                title: Text(
+                                    snapshot.data!['Nom'] + ' ' + snapshot.data!['Prénom']),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        new UserDataSettingsMain(userInfo: snapshot.data!)),
+                                  );
+                                }
+                            ),
+                            ListTile(
+                                title: Text('...'),
+                                onTap: () {}
+                            ),
+                            ListTile(
+                                title: Text('...'),
+                                onTap: () {}
+                            ),
+                            ListTile(
+                                leading: Icon(
+                                    Icons.settings, color: Color(0xFF9B9B9B)),
+                                title: Text('Paramètres'),
+                                onTap: () {}
+                            ),
+                            ListTile(
+                              leading: Icon(
+                                  Icons.logout, color: Color(0xFF9B9B9B)),
+                              title: Text('Déconnexion'),
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      _popUp(context),
+                                );
+                              },
+                            ),
+                          ]
+                      ).toList(),
+                    );
+                    return Container();
+                  }
                 ),
               ),
             ],

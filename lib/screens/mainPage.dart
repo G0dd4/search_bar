@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:search_bar/widget/bottomBar.dart';
@@ -27,6 +28,9 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPage extends State<MainPage> {
+  Stream<QuerySnapshot> myCollectionRealTime = FirebaseFirestore.instance
+      .collection("Livres")
+      .snapshots();
   List<Buttons> buttons = [];
 
   final Stream<List<Book>> streamSearchBar = searchBarData.stream;
@@ -39,6 +43,7 @@ class _MainPage extends State<MainPage> {
 
   CarouselButtons carouselButtons = CarouselButtons();
 
+  List<Book> initialBooks = [];
   List<Book> preFilteredBooks = [];
   List<Book> filteredBooks = [];
   List<Book> booksDisplayer = [];
@@ -83,24 +88,37 @@ class _MainPage extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    booksDisplayer = initialBooks;
 
-    filteredBooks = initialBooks;
-    preFilteredBooks = initialBooks;
 
-    buttons = [
-      Buttons('science-fiction', Colors.red, false, buttonIndexData, 1,
-          buttonBooksData, initialBooks),
-      Buttons('romance', Colors.amber, false, buttonIndexData, 2,
-          buttonBooksData, initialBooks),
-      Buttons('mystère', Colors.teal, false, buttonIndexData, 3,
-          buttonBooksData, initialBooks),
-      Buttons('fantasy', Colors.green, false, buttonIndexData, 4,
-          buttonBooksData, initialBooks),
-      Buttons('aventure', Colors.black, false, buttonIndexData, 2,
-          buttonBooksData, initialBooks),
-    ];
+    myCollectionRealTime.forEach((param) {
+      param.docs.forEach((element) {
+        Map<String,dynamic> a = element.data() as Map<String,dynamic>;
+        initialBooks.add(Book.map(a));
+      });
+      booksDisplayer = initialBooks;
+      preFilteredBooks = initialBooks;
+      filteredBooks = initialBooks;
+      buttons = [
+        Buttons('science-fiction', Colors.red, false, buttonIndexData, 1,
+            buttonBooksData, initialBooks),
+        Buttons('romance', Colors.amber, false, buttonIndexData, 2,
+            buttonBooksData, initialBooks),
+        Buttons('mystère', Colors.teal, false, buttonIndexData, 3,
+            buttonBooksData, initialBooks),
+        Buttons('fantasy', Colors.green, false, buttonIndexData, 4,
+            buttonBooksData, initialBooks),
+        Buttons('aventure', Colors.black, false, buttonIndexData, 2,
+            buttonBooksData, initialBooks),
+      ];
+      setState(() {
 
+      });
+    });
+    /*
+    myCollectionRealTime.listen((param) {
+      _initInitialBooks(param);
+    });
+    */
     buttonIndexStreamSubscription = streamButtonIndex.listen((param) {
       _updateStateButton(param);
     });
@@ -123,8 +141,9 @@ class _MainPage extends State<MainPage> {
     super.dispose();
   }
 
+
   Widget build(BuildContext context) {
-    return Scaffold(
+     return Scaffold(
       body: SafeArea(
         /*************************************
          * Création d'un objet Column        *

@@ -1,5 +1,5 @@
 import 'package:search_bar/screens/myLibrary.dart';
-import 'package:search_bar/screens/profileHome.dart';
+import 'package:search_bar/screens/profileMainPage.dart';
 import 'package:search_bar/screens/wrapper.dart';
 import '../screens/mainPage.dart';
 import 'package:flutter/material.dart';
@@ -71,20 +71,20 @@ class _BottomBar extends State<BottomBar> {
                       Navigator.pushAndRemoveUntil(
                           context,
                           customPageRouteBuilder(
-                              MainPage(streamController.stream)),
+                              MainPage()),
                           (_) => false);
                     break;
                   case 2:
                     if (widget.current != 2)
                       Navigator.pushAndRemoveUntil(
                           context, customPageRouteBuilder(
-                          MyLibrary()), (_) => false);
+                          MyLibraryMain()), (_) => false);
                     break;
                   case 3:
                     if (widget.current != 3)
                       Navigator.pushAndRemoveUntil(
                           context, customPageRouteBuilder(
-                          Profile()), (_) => false);
+                          ProfileMain()), (_) => false);
                     break;
                   default:
                 }

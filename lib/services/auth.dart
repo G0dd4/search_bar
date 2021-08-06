@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:search_bar/services/bddUsers.dart';
-
+import 'package:search_bar/api/firebase_firestor_api.dart';
 class AuthService{
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -42,7 +41,13 @@ class AuthService{
     try{
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User? user = result.user;
-      await BddUser().updateUserData(lastName,firstName,email,password,pseudo);
+      Map<String,dynamic> data = {
+        'Nom' : lastName,
+        'Prénom' : firstName,
+        'Email' : email,
+        'Pseudo' : pseudo
+      };
+      await FirebaseFirestoreApi.setData("Utilisateurs", FirebaseAuth.instance.currentUser!.uid, data);
       return user;
     }catch(e){
       print(e.toString());
@@ -60,22 +65,46 @@ class AuthService{
     }
   }
 
-  Future reAuthenticate(String email, String password, String lastName, String firstName, String pseudo) async {
+  Future updateEmail(String email, String password,String newEmail) async {
     try{
       User? user = FirebaseAuth.instance.currentUser!;
       UserCredential authResult = await user.reauthenticateWithCredential(
-        EmailAuthProvider.credential(
-          email: email,
-          password: password,
-        )
+          EmailAuthProvider.credential(
+            email: email,
+            password: password,
+          )
       );
-      await BddUser().updateUserData(lastName,firstName,email,password,pseudo);
-        return authResult.user;
+      Map<String, dynamic>? data = await FirebaseFirestoreApi.getDocument('Utilisateurs',FirebaseAuth.instance.currentUser!.uid);
+      User? user2 =  authResult.user;
+      user2!.updateEmail(newEmail);
+      data!['Email'] = email;
+      FirebaseFirestoreApi.setData("Utilisateurs", FirebaseAuth.instance.currentUser!.uid, data);
+
+      return user2;
     }catch(e){
       print(e.toString());
       return null;
     }
   }
+
+  Future updatePassword(String email, String password,String newPassword) async {
+    try{
+      User? user = FirebaseAuth.instance.currentUser!;
+      UserCredential authResult = await user.reauthenticateWithCredential(
+          EmailAuthProvider.credential(
+            email: email,
+            password: password,
+          )
+      );
+      User? user2 =  authResult.user;
+      user2!.updatePassword(newPassword);
+      return user2;
+    }catch(e){
+      print(e.toString());
+      return null;
+    }
+  }
+
 
   Future resetPassword(String email) async{
     try{
@@ -86,12 +115,5 @@ class AuthService{
     }
   }
 
- // getEmail() async{
- //    try{
- //      return _auth.currentUser!.email;
- //    }catch(e){
- //      print(e.toString());
- //      return null;
- //    }
- //  }
+
 }

@@ -6,10 +6,10 @@ class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xFFFCFCFC),
-      child: Center(
-        child: Image(image: AssetImage('assets/Logo_nooks.png'))
-    )
+        color: Color(0xFFFCFCFC),
+        child: Center(
+            child: Image(image: AssetImage('assets/Logo_nooks.png'))
+        )
     );
   }
 }

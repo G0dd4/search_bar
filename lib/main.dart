@@ -2,18 +2,18 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:search_bar/screens/loading.dart';
 import 'package:search_bar/services/auth.dart';
 import 'screens/wrapper.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:search_bar/screens/mainPage.dart';
-import 'package:search_bar/api/importBook.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  initialBooks = await initBooks();
+
   runApp(MyApp());
 }
 

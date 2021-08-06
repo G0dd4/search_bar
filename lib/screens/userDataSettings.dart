@@ -1,39 +1,41 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:search_bar/models/userData.dart';
-import 'package:search_bar/screens/profileHome.dart';
-import 'package:search_bar/services/auth.dart';
-import 'package:search_bar/services/bddUsers.dart';
+import 'package:search_bar/api/firebase_firestor_api.dart';
+import 'package:search_bar/screens/profileMainPage.dart';
 
-class UserDataSettings extends StatefulWidget {
-  const UserDataSettings({Key? key}) : super(key: key);
+import 'changeEmail.dart';
+import 'changePassword.dart';
+
+
+class UserDataSettingsMain extends StatefulWidget {
+
+
+  final Map<String,dynamic> userInfo;
+  UserDataSettingsMain({
+    required this.userInfo,
+  });
 
   @override
-  _UserDataSettingsState createState() => _UserDataSettingsState();
+  _UserDataSettingsMainState createState() => _UserDataSettingsMainState();
 }
 
 
-class _UserDataSettingsState extends State<UserDataSettings> {
+class _UserDataSettingsMainState extends State<UserDataSettingsMain> {
 
   final _formKey = GlobalKey<FormState>();
   bool _isEnabled = false;
-  String email ='';
-  String password ='';
   String lastName='';
   String firstName='';
   String pseudo='';
 
-
   @override
   Widget build(BuildContext context) {
-    final userData = Provider.of<UserData>(context);
-    final String uid = userData.uid;
-    final AuthService _auth = AuthService();
-    String currentEmail =userData.email;
-    String currentPassword =userData.password;
-    String currentLastName=userData.lastName;
-    String currentFirstName=userData.firstName;
-    String currentPseudo=userData.pseudo;
+
+    String currentEmail =widget.userInfo['Email'];
+    String currentLastName=widget.userInfo['Nom'];
+    String currentFirstName=widget.userInfo['Prénom'];
+    String currentPseudo=widget.userInfo['Pseudo'];
 
 
     return Scaffold(
@@ -41,9 +43,12 @@ class _UserDataSettingsState extends State<UserDataSettings> {
       appBar: AppBar(
         leading: IconButton(
             icon: Icon(Icons.arrow_back_ios,color: Color(0xFF505050)),
-          onPressed: (){
-              Navigator.pop(context);
-          }
+            onPressed: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfileMain()),
+              );
+            }
         ),
         backgroundColor: Color(0xFFFCFCFC),
         elevation: 0.0,
@@ -56,7 +61,7 @@ class _UserDataSettingsState extends State<UserDataSettings> {
               color: Color(0xFF505050),)
         ),
         actions: <Widget>[
-         IconButton(
+          IconButton(
             icon: Icon(Icons.edit,color: Color(0xFF505050)),
             onPressed: (){
               setState(() => _isEnabled = !_isEnabled);
@@ -75,8 +80,8 @@ class _UserDataSettingsState extends State<UserDataSettings> {
                 children: <Widget>[
                   SizedBox(height:20.0),
                   TextFormField(
-                    enabled: _isEnabled,
-                    initialValue: currentLastName,
+                      enabled: _isEnabled,
+                      initialValue: currentLastName,
                       decoration: const InputDecoration(
                         labelText: 'Nom',
                       ),
@@ -111,30 +116,44 @@ class _UserDataSettingsState extends State<UserDataSettings> {
                   ),
                   SizedBox(height:20.0),
                   TextFormField(
-                      enabled: _isEnabled,
+                      enabled: false,
                       initialValue: currentEmail,
                       decoration: const InputDecoration(
                         //hintText: 'Adresse mail',
                         labelText: 'Adresse mail',
                       ),
-                      validator: (val) => val!.isEmpty ? 'Entrez une adresse mail' : null,
-                      onChanged: (val){
-                        setState(() => email = val);
-                      }
+                      //validator: (val) => val!.isEmpty ? 'Entrez une adresse mail' : null,
+                      onChanged: (val){}
                   ),
                   SizedBox(height:20.0),
-                  TextFormField(
-                      enabled: _isEnabled,
-                      initialValue: currentPassword,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        //hintText: 'Mot de passe',
-                        labelText: 'Mot de passe',
-                      ),
-                      validator: (val) => val!.isEmpty ? 'Entrez un mot de passe' : null,
-                      onChanged: (val){
-                        setState(() => password = val);
-                      }
+                  RichText(
+                    text: TextSpan(
+                        text: 'Modifier le mail ',
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.push(
+                              context,
+                              customPageRouteBuilder(ChangeEmail(userInfo: widget.userInfo)),
+                            );
+                          },
+                        style: TextStyle(
+                          color: Colors.blue,
+                        )),
+                  ),
+                  SizedBox(height:20.0),
+                  RichText(
+                    text: TextSpan(
+                        text: 'Modifier le mot de passe ',
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.push(
+                              context,
+                              customPageRouteBuilder(ChangePassword()),
+                            );
+                          },
+                        style: TextStyle(
+                          color: Colors.blue,
+                        )),
                   ),
                   SizedBox(height:20.0),
                   TextButton(
@@ -153,29 +172,17 @@ class _UserDataSettingsState extends State<UserDataSettings> {
                       onPressed: () async{
                         if(_isEnabled) {
                           if (_formKey.currentState!.validate()) {
-                            /*showDialog(
-                              context: context,
-                              builder: (BuildContext context) => _popUp(context),
-                            );*/
-                            /*if(email != currentEmail || password != currentPassword){
-                              _auth.reAuthenticate(
-                                  (lastName == '') ? currentLastName : lastName,
-                                  (firstName == '') ? currentFirstName : firstName,
-                                  (email == '') ? currentEmail : email,
-                                  (password == '') ? currentPassword : password,
-                                  (pseudo == '') ? currentPseudo : pseudo
-                              );
-                            }else {*/
-                              await BddUser().updateUserData(
-                                  (lastName == '') ? currentLastName : lastName,
-                                  (firstName == '') ? currentFirstName : firstName,
-                                  (email == '') ? currentEmail : email,
-                                  (password == '') ? currentPassword : password,
-                                  (pseudo == '') ? currentPseudo : pseudo);
+                            Map<String,dynamic> data = {
+                              'Nom' : (lastName == '') ? currentLastName : lastName,
+                              'Prénom' : (firstName == '') ? currentFirstName : firstName,
+                              'Email' : currentEmail,
+                              'Pseudo' : (pseudo == '') ? currentPseudo : pseudo,
+                            };
+                            FirebaseFirestoreApi.setData("Utilisateurs", FirebaseAuth.instance.currentUser!.uid, data);
                             //}
-                              Navigator.pushAndRemoveUntil(context,
-                                  customPageRouteBuilder(Profile()), (
-                                      _) => false);
+                            Navigator.pushAndRemoveUntil(context,
+                                customPageRouteBuilder(ProfileMain()), (
+                                    _) => false);
                           }
                         }
                       }
@@ -248,4 +255,3 @@ class _UserDataSettingsState extends State<UserDataSettings> {
     );
   }
 }
-

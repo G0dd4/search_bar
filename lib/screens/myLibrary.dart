@@ -1,36 +1,14 @@
 import 'dart:async';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:search_bar/services/bddUsers.dart';
-import 'package:search_bar/widget/bookCarouselTitle.dart';
+import 'package:search_bar/widget/bookCarousel.dart';
 import 'package:search_bar/widget/books.dart';
 import 'package:search_bar/widget/bottomBar.dart';
-import 'package:search_bar/widget/listBook.dart';
 import 'package:search_bar/widget/searchBar.dart';
 
-
-class MyLibrary extends StatefulWidget {
-  const MyLibrary({Key? key}) : super(key: key);
-
-  @override
-  _MyLibraryState createState() => _MyLibraryState();
-}
-
-class _MyLibraryState extends State<MyLibrary> {
-
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamProvider<List<Book>>.value(
-      initialData: [],
-      value: BddUser().booksToLibrary,
-      child: MaterialApp(debugShowCheckedModeBanner: false,
-          home:MyLibraryMain()
-      ),
-    );
-  }
-}
+StreamController<List<Book>> streamControllerSearchBarUserBook =
+    StreamController<List<Book>>.broadcast();
 
 class MyLibraryMain extends StatefulWidget {
   const MyLibraryMain({Key? key}) : super(key: key);
@@ -40,35 +18,72 @@ class MyLibraryMain extends StatefulWidget {
 }
 
 class _MyLibraryMainState extends State<MyLibraryMain> {
-  ListBook listBook = ListBook();
 
-  StreamController<int> streamController = StreamController<int>.broadcast();
+  late StreamSubscription streamSubscriptionBook;
+  late StreamSubscription streamSubscriptionRealTime;
 
+  Stream<List<Book>> streamBook = streamControllerSearchBarUserBook.stream;
+  Stream<QuerySnapshot> collectionRealTime = FirebaseFirestore.instance
+      .collection("Utilisateurs/" +
+          FirebaseAuth.instance.currentUser!.uid +
+          "/Ma bibliothèque")
+      .snapshots();
+  int oldLength = 0;
+
+  List<Book> userBooks = [];
+  List<Book> filteredBooks = [];
+
+  void _updateUserBook(param) {
+      filteredBooks = param;
+      setState(() {
+
+      });
+  }
+
+  void _initUserBook(param) {
+    userBooks = [];
+    param.docs.forEach((element) {
+      Map<String, dynamic> a = element.data() as Map<String, dynamic>;
+      userBooks.add(Book.map(a));
+    });
+
+    setState(() {
+      filteredBooks = userBooks;
+    });
+  }
+  @override
+  void dispose(){
+    super.dispose();
+    streamSubscriptionRealTime.cancel();
+    streamSubscriptionBook.cancel();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    streamSubscriptionRealTime = collectionRealTime.listen((param) {
+      _initUserBook(param);
+    });
+    streamSubscriptionBook = streamBook.listen((param) {
+      _updateUserBook(param);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final books = Provider.of<List<Book>>(context);
-    List<Book> filtered = books;
     return Scaffold(
       body: SafeArea(
-        child: Column(
-        children: <Widget>[
-          SearchBar("Ma Bibliothèque",books,filtered,streamController),
-          (filtered != [])
-              ? BookCarouselTitle(
-            title: "",
-            books: filtered ,
+        child: Column(children: <Widget>[
+          SearchBar(
+            title: 'Ma bibliothèque',
+            initialBooks: userBooks,
+            streamController: streamControllerSearchBarUserBook,
+          ),
+          BookCarousel(
+            books: filteredBooks,
           )
-              : Text('Aucun livre dans la bibliothèque',
-                  style: TextStyle(
-                    letterSpacing: 1.0,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30.0,
-                    color: Color(0xFF505050),)
-              )
-        ]
-        ),
+        ]),
       ),
       bottomNavigationBar: BottomBar(
         current: 2,
@@ -76,4 +91,3 @@ class _MyLibraryMainState extends State<MyLibraryMain> {
     );
   }
 }
-
