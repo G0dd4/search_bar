@@ -44,8 +44,6 @@ class _ProfileMainState extends State<ProfileMain> {
                   color: Color(0xFF505050),
                 ),
               ),
-              //Text('Utilisateur: ' + email),
-              // Bouton de déconnexion
               Expanded(
                 child: FutureBuilder<Map<String, dynamic>>(
                     future: intUserInfo(),

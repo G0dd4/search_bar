@@ -50,9 +50,13 @@ class _Home extends State<Home> {
     param.docs.forEach((element) {
       var a = element.data() as Map<String, dynamic>;
       newParution.add(Book.map(a));
+      newParution[newParution.length - 1].getURLImage();
     });
-    isLoaded = true;
-    setState(() {});
+
+    newParution[newParution.length - 1].getURLImage().whenComplete(() {
+      isLoaded = true;
+      setState(() {});
+    });
   }
 
   @override
@@ -70,8 +74,7 @@ class _Home extends State<Home> {
       return Scaffold(
         body: Builder(
           builder: (context) => SafeArea(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+              child: ListView(
             children: [
               Padding(
                 padding: const EdgeInsets.all(30.0),

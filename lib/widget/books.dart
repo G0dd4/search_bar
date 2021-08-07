@@ -23,7 +23,7 @@ class Book {
   late String epubDirectory;
   late String imageDirectory;
 
-  late Future<FirebaseFile> imageStorage;
+  late FirebaseFile imageStorage;
   late Future<FirebaseFile> epubStorage;
 
   late String genre;
@@ -52,13 +52,16 @@ class Book {
     Timestamp stamp = data['Parution'];
     this.time = stamp.toDate();
 
-    if (imageDirectory == null) {}
-    imageStorage = FirebaseStorageApi.listSingle("Images", data['imageFile']);
     epubStorage = FirebaseStorageApi.listSingle("Epubs", data['epubFile']);
   }
 
   void _importEpub(epub.EpubBook myEpub) {
     this.epubFile = myEpub;
+  }
+
+  Future<void> getURLImage() async {
+    this.imageStorage =
+        await FirebaseStorageApi.listSingle("Images", this.imageDirectory);
   }
 
   bool contain(Book myBook) {
@@ -94,33 +97,20 @@ class Book {
             alignment: AlignmentDirectional.topEnd,
             children: [
               // Image du livre
-              FutureBuilder<FirebaseFile>(
-                future: imageStorage,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Container(
-                      height: itemHeight,
-                      width: itemWidth,
-                      decoration: new BoxDecoration(
-                        image: new DecorationImage(
-                          image: new CachedNetworkImageProvider(
-                              snapshot.data!.url),
-                          fit: BoxFit.fill,
-                        ),
-                        boxShadow: [
-                          BoxShadow(blurRadius: 5, offset: Offset(4.0, 4.0)),
-                        ],
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    );
-                  } else {
-                    return Container(
-                      height: itemHeight,
-                      width: itemWidth,
-                    );
-                  }
-                },
+              Container(
+                height: itemHeight,
+                width: itemWidth,
+                decoration: new BoxDecoration(
+                  image: new DecorationImage(
+                    image: new CachedNetworkImageProvider(imageStorage.url),
+                    fit: BoxFit.fill,
+                  ),
+                  boxShadow: [
+                    BoxShadow(blurRadius: 5, offset: Offset(4.0, 4.0)),
+                  ],
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
               ),
             ],
           ),
@@ -172,34 +162,20 @@ class Book {
               alignment: AlignmentDirectional.topEnd,
               children: [
                 // Image du livre
-                FutureBuilder<FirebaseFile>(
-                  future: imageStorage,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Container(
-                        height: itemHeight,
-                        width: itemWidth,
-                        decoration: new BoxDecoration(
-                          image: new DecorationImage(
-                            image: new CachedNetworkImageProvider(
-                                snapshot.data!.url),
-                            fit: BoxFit.fill,
-                          ),
-                          boxShadow: [
-                            BoxShadow(blurRadius: 5, offset: Offset(4.0, 4.0)),
-                          ],
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      );
-                    } else {
-                      return Container(
-                        height: itemHeight,
-                        width: itemWidth,
-                        color: Color(0xFF9B9B9B),
-                      );
-                    }
-                  },
+                Container(
+                  height: itemHeight,
+                  width: itemWidth,
+                  decoration: new BoxDecoration(
+                    image: new DecorationImage(
+                      image: new CachedNetworkImageProvider(imageStorage.url),
+                      fit: BoxFit.fill,
+                    ),
+                    boxShadow: [
+                      BoxShadow(blurRadius: 5, offset: Offset(4.0, 4.0)),
+                    ],
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                 ),
               ],
             ),

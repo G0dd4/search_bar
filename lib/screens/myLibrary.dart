@@ -44,11 +44,18 @@ class _MyLibraryMainState extends State<MyLibraryMain> {
     param.docs.forEach((element) {
       Map<String, dynamic> a = element.data() as Map<String, dynamic>;
       userBooks.add(Book.map(a));
+      userBooks[userBooks.length - 1].getURLImage();
     });
-    isLoaded = true;
-    setState(() {
-      filteredBooks = userBooks;
-    });
+    if (userBooks.length > 0) {
+      userBooks[userBooks.length - 1].getURLImage().whenComplete(() {
+        isLoaded = true;
+        filteredBooks = userBooks;
+        setState(() {});
+      });
+    } else {
+      isLoaded = true;
+      setState(() {});
+    }
   }
 
   @override
@@ -81,9 +88,15 @@ class _MyLibraryMainState extends State<MyLibraryMain> {
               initialBooks: userBooks,
               streamController: streamControllerSearchBarUserBook,
             ),
-            BookCarousel(
-              books: filteredBooks,
-            )
+            (userBooks.length != 0)
+                ? BookCarousel(
+                    books: filteredBooks,
+                  )
+                : Expanded(
+                    child: Center(
+                      child: Text("Pas de livres dans la bibliothèque"),
+                    ),
+                  )
           ]),
         ),
         bottomNavigationBar: BottomBar(

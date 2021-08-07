@@ -110,6 +110,7 @@ class _MainPage extends State<MainPage> {
     param.docs.forEach((element) {
       var a = element.data() as Map<String, dynamic>;
       initialBooks.add(Book.map(a));
+      initialBooks[initialBooks.length - 1].getURLImage();
     });
     buttons = [
       Buttons('science-fiction', Colors.red, false, buttonIndexData, 1,
@@ -126,9 +127,11 @@ class _MainPage extends State<MainPage> {
     booksDisplayer = initialBooks;
     preFilteredBooks = initialBooks;
     filteredBooks = initialBooks;
-    isLoaded = true;
 
-    setState(() {});
+    initialBooks[initialBooks.length - 1].getURLImage().whenComplete(() {
+      isLoaded = true;
+      setState(() {});
+    });
   }
 
   @override
