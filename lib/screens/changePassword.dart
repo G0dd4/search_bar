@@ -82,6 +82,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         //hintText: 'Mot de passe',
                         labelText: 'Nouveau mot de passe',
                       ),
+                      obscureText: true,
                       validator: (val) => val!.length < 6 ? 'Entrez votre nouveau mot de passe' : null,
                       onChanged: (val){
                         setState(() => newPassword = val);

@@ -86,7 +86,7 @@ class _SignInState extends State<SignIn>{
                                 //hintText: 'Adresse mail',
                                 labelText: 'Adresse mail',
                               ),
-                              initialValue:snapshot.data![0],
+                              initialValue:(error != '' && email != '') ? email : snapshot.data![0],
                               validator: (val) => val!.isEmpty ? 'Entrez une adresse mail' : null,
                               onChanged: (val){
                                 setState(() => email = val);
@@ -99,7 +99,7 @@ class _SignInState extends State<SignIn>{
                                 labelText: 'Mot de passe',
                               ),
                               obscureText: true,
-                              initialValue:snapshot.data![1],
+                              initialValue:(error != '' && password != '') ? password : snapshot.data![1],
                               validator: (val) => val!.length < 6 ? 'Entrez un mot de passe' : null,
                               onChanged: (val){
                                 setState(() => password = val);
@@ -151,12 +151,12 @@ class _SignInState extends State<SignIn>{
                                     final prefs = await SharedPreferences.getInstance();
                                     if(_checkbox) {
                                       setState(() {
-                                        prefs.setString('email', email);
-                                        prefs.setString('password', password);
+                                        prefs.setString('email', (email != '') ? email : snapshot.data![0]);
+                                        prefs.setString('password', (password != '') ? password : snapshot.data![1]);
                                       });
                                       print(prefs.getString('email'));
                                     }
-                                    setState(() => prefs.setString('password2', password));
+                                    setState(() => prefs.setString('password2', (password != '') ? password : snapshot.data![1]));
                                   }
                                 }
                               }
