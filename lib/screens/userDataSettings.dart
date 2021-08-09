@@ -148,7 +148,7 @@ class _UserDataSettingsMainState extends State<UserDataSettingsMain> {
                           ..onTap = () {
                             Navigator.push(
                               context,
-                              customPageRouteBuilder(ChangePassword()),
+                              customPageRouteBuilder(ChangePassword(userInfo: widget.userInfo)),
                             );
                           },
                         style: TextStyle(

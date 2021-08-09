@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:search_bar/screens/profileMainPage.dart';
 import 'package:search_bar/services/auth.dart';
-import 'package:search_bar/api/firebase_firestor_api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChangeEmail extends StatefulWidget {
   const ChangeEmail({
@@ -21,14 +21,13 @@ class _ChangeEmailState extends State<ChangeEmail> {
   String password ='';
   String newEmail = '';
   String error ='';
+  late String currentPassword;
+
 
 
   @override
   Widget build(BuildContext context) {
-
-    String currentLastName=widget.userInfo['Nom'];
-    String currentFirstName=widget.userInfo['Prénom'];
-    String currentPseudo=widget.userInfo['Pseudo'];
+    String currentEmail = widget.userInfo['Email'];
     return Scaffold(
       backgroundColor: Color(0xFFFCFCFC),
       appBar: AppBar(
@@ -40,7 +39,7 @@ class _ChangeEmailState extends State<ChangeEmail> {
         ),
         backgroundColor: Color(0xFFFCFCFC),
         elevation: 0.0,
-        title: Text('Modification des identifiants',
+        title: Text('Modification du mail',
             style: TextStyle(
               letterSpacing: 1.0,
               fontFamily: 'Roboto',
@@ -109,9 +108,12 @@ class _ChangeEmailState extends State<ChangeEmail> {
                         if (_formKey.currentState!.validate()) {
                           dynamic result = await _auth.updateEmail(email, password,newEmail);
                           if (result == null) {
-                            setState(() {
+                            final prefs = await SharedPreferences.getInstance();
+                            setState((){
                               error = 'Adresse mail ou mot de passe incorrect';
+                              currentPassword = prefs.getString('password2')!;
                             });
+                            await _auth.signInWithEmailAndPassword(currentEmail,currentPassword);
                           }else{
                             showDialog(
                               context: context,
@@ -149,7 +151,11 @@ class _ChangeEmailState extends State<ChangeEmail> {
             /*Navigator.pushAndRemoveUntil(context,
                 customPageRouteBuilder(UserDataSettingsMain()), (_) => false);
              */
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>
+              ProfileMain()),
+            );
           },
           child: const Text('Ok', style: TextStyle(color: Colors.blue)),
         ),
