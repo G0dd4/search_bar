@@ -34,6 +34,9 @@ class _MyLibraryMainState extends State<MyLibraryMain> {
   List<Book> userBooks = [];
   List<Book> filteredBooks = [];
 
+  int bookToLoad = 0;
+  int bookLoaded = 0;
+
   void _updateUserBook(param) {
     filteredBooks = param;
     setState(() {});
@@ -41,20 +44,33 @@ class _MyLibraryMainState extends State<MyLibraryMain> {
 
   void _initUserBook(param) {
     userBooks = [];
+    bookToLoad = param.docs.length;
     param.docs.forEach((element) {
       Map<String, dynamic> a = element.data() as Map<String, dynamic>;
       userBooks.add(Book.map(a));
-      userBooks[userBooks.length - 1].getURLImage();
+      if(userBooks.length < 5)
+        userBooks[userBooks.length - 1].getURLImage(context,true)
+            .whenComplete((){
+            bookLoaded+=1;
+            setState(() {
+
+            });
+        });
+      else
+        userBooks[userBooks.length - 1].getURLImage(context,false)
+            .whenComplete((){
+          bookLoaded+=1;
+          setState(() {
+
+          });
+        });
     });
-    if (userBooks.length > 0) {
-      userBooks[userBooks.length - 1].getURLImage().whenComplete(() {
-        isLoaded = true;
-        filteredBooks = userBooks;
-        setState(() {});
-      });
-    } else {
+    filteredBooks = userBooks;
+    if(userBooks.length == 0){
       isLoaded = true;
-      setState(() {});
+      setState(() {
+
+      });
     }
   }
 
@@ -79,6 +95,12 @@ class _MyLibraryMainState extends State<MyLibraryMain> {
 
   @override
   Widget build(BuildContext context) {
+
+    if(bookToLoad == bookLoaded && bookToLoad != 0){
+      isLoaded = true;
+
+    }
+
     if (isLoaded == true) {
       return Scaffold(
         body: SafeArea(
