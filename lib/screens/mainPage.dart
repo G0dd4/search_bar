@@ -13,10 +13,10 @@ import 'package:search_bar/widget/books.dart';
 
 StreamController<int> buttonIndexData = StreamController<int>.broadcast();
 StreamController<List<Book>> buttonBooksData =
-    StreamController<List<Book>>.broadcast();
+StreamController<List<Book>>.broadcast();
 
 StreamController<List<Book>> searchBarData =
-    StreamController<List<Book>>.broadcast();
+StreamController<List<Book>>.broadcast();
 
 @immutable
 class MainPage extends StatefulWidget {
@@ -26,7 +26,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPage extends State<MainPage> {
   Stream<QuerySnapshot> myCollectionRealTime =
-      FirebaseFirestore.instance.collection("Livres").snapshots();
+  FirebaseFirestore.instance.collection("Livres").snapshots();
   List<Buttons> buttons = [];
 
   final Stream<List<Book>> streamSearchBar = searchBarData.stream;
@@ -83,6 +83,9 @@ class _MainPage extends State<MainPage> {
     }
   }
 
+  int bookLoaded = 0;
+  int bookToLoad = 0;
+
   @override
   void initState() {
     super.initState();
@@ -92,7 +95,7 @@ class _MainPage extends State<MainPage> {
     });
 
     buttonIndexStreamSubscription = streamButtonIndex.listen(
-      (param) {
+          (param) {
         _updateStateButton(param);
       },
     );
@@ -107,68 +110,112 @@ class _MainPage extends State<MainPage> {
   }
 
   void _importBooks(param) {
+    bookToLoad = param.docs.length;
     param.docs.forEach((element) {
       var a = element.data() as Map<String, dynamic>;
       initialBooks.add(Book.map(a));
-      initialBooks[initialBooks.length - 1].getURLImage();
+      if (initialBooks.length < 5)
+        initialBooks[initialBooks.length - 1]
+            .getURLImage(context, true)
+            .whenComplete(() {
+          bookLoaded += 1;
+          setState(() {});
+        });
+      else
+        initialBooks[initialBooks.length - 1]
+            .getURLImage(context, false)
+            .whenComplete(() {
+          bookLoaded += 1;
+          setState(() {});
+        });
     });
-    buttons = [
-      Buttons('science-fiction', Colors.red, false, buttonIndexData, 1,
-          buttonBooksData, initialBooks),
-      Buttons('romance', Colors.amber, false, buttonIndexData, 2,
-          buttonBooksData, initialBooks),
-      Buttons('mystère', Colors.teal, false, buttonIndexData, 3,
-          buttonBooksData, initialBooks),
-      Buttons('fantasy', Colors.green, false, buttonIndexData, 4,
-          buttonBooksData, initialBooks),
-      Buttons('aventure', Colors.black, false, buttonIndexData, 5,
-          buttonBooksData, initialBooks),
-    ];
-    booksDisplayer = initialBooks;
-    preFilteredBooks = initialBooks;
-    filteredBooks = initialBooks;
+      buttons = [
+        Buttons(
+            'science-fiction',
+            Colors.red,
+            false,
+            buttonIndexData,
+            1,
+            buttonBooksData,
+            initialBooks),
+        Buttons(
+            'romance',
+            Colors.amber,
+            false,
+            buttonIndexData,
+            2,
+            buttonBooksData,
+            initialBooks),
+        Buttons(
+            'mystère',
+            Colors.teal,
+            false,
+            buttonIndexData,
+            3,
+            buttonBooksData,
+            initialBooks),
+        Buttons(
+            'fantasy',
+            Colors.green,
+            false,
+            buttonIndexData,
+            4,
+            buttonBooksData,
+            initialBooks),
+        Buttons(
+            'aventure',
+            Colors.black,
+            false,
+            buttonIndexData,
+            5,
+            buttonBooksData,
+            initialBooks),
+      ];
+      booksDisplayer = initialBooks;
+      preFilteredBooks = initialBooks;
+      filteredBooks = initialBooks;
+    }
 
-    initialBooks[initialBooks.length - 1].getURLImage().whenComplete(() {
-      isLoaded = true;
-      setState(() {});
-    });
-  }
+        @override
+        void dispose()
+    {
+      buttonIndexStreamSubscription.cancel();
+      searchBarSubscription.cancel();
+      buttonBooksStreamSubscription.cancel();
 
-  @override
-  void dispose() {
-    buttonIndexStreamSubscription.cancel();
-    searchBarSubscription.cancel();
-    buttonBooksStreamSubscription.cancel();
+      super.dispose();
+    }
 
-    super.dispose();
-  }
+    Widget build(BuildContext context) {
+      if(bookToLoad == bookLoaded && bookToLoad != 0){
+        isLoaded = true;
+      }
 
-  Widget build(BuildContext context) {
-    if (isLoaded == true) {
-      return Scaffold(
-        body: SafeArea(
-          /*************************************
-         * Création d'un objet Column        *
-         * pour placer nos différents Widget *
-         *************************************/
-          child: Column(
-            children: [
-              SearchBar(
-                title: "Explorer",
-                initialBooks: initialBooks,
-                streamController: searchBarData,
-              ),
-              carouselButtons.carouselWidget(buttons),
-              ListBook(books: booksDisplayer),
-            ],
+      if (isLoaded == true) {
+        return Scaffold(
+          body: SafeArea(
+            /*************************************
+             * Création d'un objet Column        *
+             * pour placer nos différents Widget *
+             *************************************/
+            child: Column(
+              children: [
+                SearchBar(
+                  title: "Explorer",
+                  initialBooks: initialBooks,
+                  streamController: searchBarData,
+                ),
+                carouselButtons.carouselWidget(buttons),
+                ListBook(books: booksDisplayer),
+              ],
+            ),
           ),
-        ),
-        bottomNavigationBar: BottomBar(
-          current: 1,
-        ),
-      );
-    } else {
-      return LoadingPage(title: "Explorer", index: 1);
+          bottomNavigationBar: BottomBar(
+            current: 1,
+          ),
+        );
+      } else {
+        return LoadingPage(title: "Explorer", index: 1);
+      }
     }
   }
-}

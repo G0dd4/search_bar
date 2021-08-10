@@ -21,6 +21,9 @@ class _Home extends State<Home> {
 
   List<Book> newParution = [];
 
+  int bookToLoad = 0;
+  int bookLoaded = 0;
+
   bool isLoaded = false;
 
   void _isConnected() async {
@@ -47,15 +50,27 @@ class _Home extends State<Home> {
   }
 
   void _initNewParution(QuerySnapshot<Object?> param) {
+    bookToLoad = param.docs.length;
     param.docs.forEach((element) {
       var a = element.data() as Map<String, dynamic>;
       newParution.add(Book.map(a));
-      newParution[newParution.length - 1].getURLImage();
-    });
+      if (newParution.length < 5) {
+        newParution[newParution.length - 1]
+            .getURLImage(context, true)
+            .whenComplete(() {
+          bookLoaded += 1;
+          setState(() {
 
-    newParution[newParution.length - 1].getURLImage().whenComplete(() {
-      isLoaded = true;
-      setState(() {});
+          });
+        });
+      } else {
+        newParution[newParution.length - 1]
+            .getURLImage(context, false)
+            .whenComplete(() {
+          bookLoaded += 1;
+          setState(() {});
+        });
+      }
     });
   }
 
@@ -70,6 +85,10 @@ class _Home extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    if(bookToLoad == bookLoaded && bookToLoad != 0){
+      isLoaded = true;
+    }
+
     if (isLoaded == true)
       return Scaffold(
         body: Builder(

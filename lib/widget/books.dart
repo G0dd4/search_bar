@@ -26,6 +26,8 @@ class Book {
   late FirebaseFile imageStorage;
   late Future<FirebaseFile> epubStorage;
 
+  late CachedNetworkImageProvider coverBook;
+
   late String genre;
   late epub.EpubBook epubFile;
 
@@ -38,8 +40,8 @@ class Book {
       shortenTitle = title;
 
     this.author = data['Author'];
-    if (author.length > 15) {
-      shortenAuthor = author.replaceRange(15, null, '');
+    if (author.length > 10) {
+      shortenAuthor = author.replaceRange(10, null, '');
       shortenAuthor = shortenAuthor + "...";
     } else
       shortenAuthor = author;
@@ -59,9 +61,13 @@ class Book {
     this.epubFile = myEpub;
   }
 
-  Future<void> getURLImage() async {
+  Future<void> getURLImage(context, bool putIntoCache) async {
     this.imageStorage =
         await FirebaseStorageApi.listSingle("Images", this.imageDirectory);
+    coverBook = new CachedNetworkImageProvider(imageStorage.url);
+    if(putIntoCache == true){
+      await precacheImage(coverBook,context);
+    }
   }
 
   bool contain(Book myBook) {
