@@ -108,7 +108,7 @@ class Book {
                 width: itemWidth,
                 decoration: new BoxDecoration(
                   image: new DecorationImage(
-                    image: new CachedNetworkImageProvider(imageStorage.url),
+                    image: coverBook,
                     fit: BoxFit.fill,
                   ),
                   boxShadow: [
@@ -173,7 +173,7 @@ class Book {
                   width: itemWidth,
                   decoration: new BoxDecoration(
                     image: new DecorationImage(
-                      image: new CachedNetworkImageProvider(imageStorage.url),
+                      image: coverBook,
                       fit: BoxFit.fill,
                     ),
                     boxShadow: [

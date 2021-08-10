@@ -63,7 +63,7 @@ class _ProfileMainState extends State<ProfileMain> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            new UserDataSettingsMain()),
+                                            new UserDataSettingsMain(userInfo: snapshot.data!,)),
                                   );
                                 }),
                             ListTile(title: Text('...'), onTap: () {}),
