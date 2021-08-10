@@ -74,10 +74,10 @@ class AuthService{
             password: password,
           )
       );
-      Map<String, dynamic>? data = await FirebaseFirestoreApi.getDocument('Utilisateurs',FirebaseAuth.instance.currentUser!.uid);
       User? user2 =  authResult.user;
       user2!.updateEmail(newEmail);
-      data!['Email'] = email;
+      Map<String, dynamic>? data = await FirebaseFirestoreApi.getDocument('Utilisateurs',FirebaseAuth.instance.currentUser!.uid);
+      data!['Email'] = newEmail;
       FirebaseFirestoreApi.setData("Utilisateurs", FirebaseAuth.instance.currentUser!.uid, data);
 
       return user2;

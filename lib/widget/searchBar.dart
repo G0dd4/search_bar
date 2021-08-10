@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:search_bar/widget/books.dart';
@@ -26,6 +27,7 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late double width;
   bool isSearching = false;
+  List<String> _suggestion = [];
 
   TextEditingController textControler = TextEditingController();
   FocusNode focusNode = FocusNode();
@@ -33,6 +35,10 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    for(int i =0;i<widget.initialBooks.length;i++){
+      _suggestion.add(widget.initialBooks[i].author);
+      _suggestion.add(widget.initialBooks[i].title);
+    }
     textControler.addListener(() {});
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
@@ -54,6 +60,8 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
   }
 
   Widget changeStateSearchBare() {
+    print(widget.initialBooks[0].author);
+    print(_suggestion);
     return Padding(
       padding: const EdgeInsets.all(30.0),
       child: Container(
@@ -159,7 +167,7 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
                       padding: const EdgeInsets.only(left: 10),
                       alignment: Alignment.topCenter,
                       width: this.width / 1.7,
-                      child: TextField(
+                      child: /*TextField(
                         focusNode: focusNode,
                         autofocus: false,
                         onChanged: (value) {
@@ -174,6 +182,50 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
                           border: InputBorder.none,
                           hintText: "Search data",
                         ),
+                      ),*/
+                      Autocomplete<String>(
+                        optionsBuilder: (TextEditingValue value) {
+                          // When the field is empty
+                          if (value.text.length < 2) {
+                            return [];
+                          }
+
+                          var list1 = _suggestion.where((suggestion) => suggestion.toLowerCase().startsWith(value.text.toLowerCase())).toList();
+                          var list2 = _suggestion.where((suggestion) => suggestion.toLowerCase().contains(value.text.toLowerCase())).toList();
+
+                          
+                          return [...list1, ...list2].toSet().toList();
+                        },
+
+                        onSelected: (value) {
+                            _filterData(value);
+                            unfocusKeyboard();
+                        },
+
+                        fieldViewBuilder: (
+                        BuildContext context,
+                        TextEditingController textControler,
+                        FocusNode focusNode,
+                        VoidCallback onFieldSubmitted
+                        ) {
+                          return TextField(
+                            controller: textControler,
+                            focusNode: focusNode,
+                            autofocus: false,
+                            onEditingComplete: () {
+                              unfocusKeyboard();
+                              //isSearching = false;
+                            },
+                            onChanged: (value) {
+                              _filterData(value);
+                            },
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "Search data",
+                            ),
+                          );
+
+                        }
                       ),
                     ),
                   ),
@@ -236,10 +288,10 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
     );
   }
 
-  void _filterData(String value) {
+  void _filterData(String value) async {
     print(value);
     List<Book> filteredBooks = [];
-    for (int index = 0; index < widget.initialBooks.length; index++) {
+    /*for (int index = 0; index < widget.initialBooks.length; index++) {
       if (widget.initialBooks[index].shortenAuthor
                   .toLowerCase()
                   .contains(value.toLowerCase()) ==
@@ -274,8 +326,30 @@ class _SearchBar extends State<SearchBar> with SingleTickerProviderStateMixin {
           filteredBooks.add(widget.initialBooks[index]);
         }
       }
-    }
-    widget.streamController.add(filteredBooks);
+    }*/
+    Stream<QuerySnapshot> myCollectionByAuthor = FirebaseFirestore.instance
+        .collection("Livres")
+        .where("Author", isGreaterThanOrEqualTo: value)
+        .snapshots();
+    Stream<QuerySnapshot> myCollectionByTitle = FirebaseFirestore.instance
+        .collection("Livres")
+        .where("Title", isGreaterThanOrEqualTo: value)
+        .snapshots();
+    myCollectionByAuthor.forEach((param) {
+      param.docs.forEach((element) {
+        Map<String, dynamic> a = element.data() as Map<String, dynamic>;
+        print(a);
+        filteredBooks.add(Book.map(a));
+      });
+      print(filteredBooks);
+    });
+    myCollectionByTitle.forEach((param) async {
+      param.docs.forEach((element) {
+        Map<String, dynamic> a = element.data() as Map<String, dynamic>;
+        filteredBooks.add(Book.map(a));
+      });
+      widget.streamController.add(filteredBooks);
+    });
   }
 
   @override

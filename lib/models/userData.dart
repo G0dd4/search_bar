@@ -7,5 +7,5 @@ class UserData{
   late final String pseudo;
   late final String uid;
 
-  UserData({required this.lastName,required this.firstName,required this.email,required this.password,required this.pseudo,required this.uid});
+  UserData({required this.lastName,required this.firstName,required this.email,required this.pseudo,required this.uid});
 }

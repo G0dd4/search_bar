@@ -133,13 +133,14 @@ class _RegisterState extends State<Register> {
                           if(result == null){
                             setState(() => error = 'Entrez une adresse mail et un mot de passe valides');
                           }else{
+                            final prefs = await SharedPreferences.getInstance();
                             if(_checkbox) {
-                              final prefs = await SharedPreferences.getInstance();
                               setState(() {
                                 prefs.setString('email', email);
                                 prefs.setString('password', password);
                               });
                             }
+                            setState(() => prefs.setString('password2', password));
                           }
                         }
                       }

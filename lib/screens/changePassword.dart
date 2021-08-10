@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:search_bar/screens/profileMainPage.dart';
 import 'package:search_bar/services/auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChangePassword extends StatefulWidget {
-  const ChangePassword({Key? key}) : super(key: key);
+  const ChangePassword({
+    required this.userInfo
+  });
+  final Map<String,dynamic> userInfo;
 
   @override
   _ChangePasswordState createState() => _ChangePasswordState();
@@ -15,8 +20,12 @@ class _ChangePasswordState extends State<ChangePassword> {
   String password ='';
   String newPassword = '';
   String error ='';
+  late String currentPassword;
+
+
   @override
   Widget build(BuildContext context) {
+    String currentEmail = widget.userInfo['Email'];
     return Scaffold(
       backgroundColor: Color(0xFFFCFCFC),
       appBar: AppBar(
@@ -28,7 +37,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         ),
         backgroundColor: Color(0xFFFCFCFC),
         elevation: 0.0,
-        title: Text('Modification des identifiants',
+        title: Text('Modification du mot de passe',
             style: TextStyle(
               letterSpacing: 1.0,
               fontFamily: 'Roboto',
@@ -73,6 +82,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                         //hintText: 'Mot de passe',
                         labelText: 'Nouveau mot de passe',
                       ),
+                      obscureText: true,
                       validator: (val) => val!.length < 6 ? 'Entrez votre nouveau mot de passe' : null,
                       onChanged: (val){
                         setState(() => newPassword = val);
@@ -80,7 +90,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ),
                   SizedBox(height:20.0),
                   TextButton(
-                      child: Text('Modification du mail',
+                      child: Text('Modification du mot de passe',
                         style: TextStyle(color: Colors.white),
                       ),
                       style: ButtonStyle(
@@ -96,11 +106,15 @@ class _ChangePasswordState extends State<ChangePassword> {
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
                           dynamic result = await _auth.updatePassword(email, password,newPassword);
+                          final prefs = await SharedPreferences.getInstance();
                           if (result == null) {
-                            setState(() {
+                            setState(()  {
                               error = 'Adresse mail ou mot de passe incorrect';
+                              currentPassword = prefs.getString('password2')!;
                             });
+                            await _auth.signInWithEmailAndPassword(currentEmail,currentPassword);
                           }else{
+                            setState(() => prefs.setString('password2', newPassword));
                             showDialog(
                               context: context,
                               builder: (BuildContext context) => _popUp(context),
@@ -136,7 +150,11 @@ class _ChangePasswordState extends State<ChangePassword> {
           onPressed: (){
             /*Navigator.pushAndRemoveUntil(context,
                 customPageRouteBuilder(UserDataSettingsMain()), (_) => false);*/
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>
+                  ProfileMain()),
+            );
           },
           child: const Text('Ok', style: TextStyle(color: Colors.blue)),
         ),
