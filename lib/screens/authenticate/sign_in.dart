@@ -4,6 +4,7 @@ import 'package:search_bar/services/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../loadingScreen.dart';
 import '../resetPassword.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 
@@ -23,6 +24,7 @@ class _SignInState extends State<SignIn>{
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
   bool _checkbox = true;
+  String url = 'https://www.nooks-app.com/';
 
   String email ='';
   String password ='';
@@ -60,7 +62,7 @@ class _SignInState extends State<SignIn>{
                 style:TextStyle(color: Color(0xFF505050))
             ),
             onPressed: (){
-              widget.toggleView();
+              launchURL(url);
             },
           )
         ],
@@ -198,15 +200,13 @@ class _SignInState extends State<SignIn>{
     return [prefs.getString('email') ?? '' ,prefs.getString('password') ?? ''];
   }
 
-  /*Future<String> getPassword() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('password') ?? '' ;
-  }*/
-
-/*  foo(){
-    getEmail().then((value) => this.setState(() => lastEmail = value));
-    getPassword().then((value) => this.setState(() => lastPassword = value));// here will be printed patientPhone numbers.
-  }*/
+  launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url, forceWebView: false);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   PageRouteBuilder customPageRouteBuilder(Widget pageToGo) {
     return PageRouteBuilder(
